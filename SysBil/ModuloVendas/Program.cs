@@ -20,7 +20,6 @@ namespace ModuloVendas
             Console.WriteLine("{0}", nome50Pos);
             //teste.Insert(0, nome25Pos);
             //teste.Insert(25, "123456789");
-            Console.WriteLine(resultado.ToString());
             */
 
             do
