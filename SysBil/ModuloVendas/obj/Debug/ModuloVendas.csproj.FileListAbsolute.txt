@@ -1,2 +1,0 @@
-C:\Users\Irwilha\Documents\LearnSpace\biltiful\SysBil\ModuloVendas\obj\Debug\ModuloVendas.csprojAssemblyReference.cache
-C:\Users\Irwilha\Documents\LearnSpace\biltiful\SysBil\ModuloVendas\obj\Debug\ModuloVendas.csproj.CoreCompileInputs.cache
