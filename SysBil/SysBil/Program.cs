@@ -16,6 +16,7 @@ namespace SysBil
 			List<Cliente> listaCliente = new List<Cliente>();
 			byte op;
 			string buscar;
+			Client.ReadFile(listaCliente);
 
             do
             {
@@ -30,6 +31,7 @@ namespace SysBil
 						c = lerCliente();
 						listaCliente.Add(c);
 						listaCliente = listaCliente.OrderBy(x => x.Nome).ToList();
+						Client.WriteFile(listaCliente);
 
 						break;
 					case 2: // IMPRIMIR

@@ -1,6 +1,8 @@
 ﻿using Model;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,15 +14,97 @@ namespace Controllers
         public static string GetClient(Cliente c)
         {
             if(c.Situacao == 'A')
-                return ">>>Cliente " + c.Nome + "<<<" +
+                return "\n>>>Cliente " + c.Nome + "<<<" +
                     "\nCPF: " + c.Cpf +
                     "\nData Nascimento: " + c.DNascimento.ToString("dd/MM/yyyy") +
                     "\nSexo: " + c.Sexo + 
                     "\nUltima Compra: " + c.UCompra.ToString("dd/MM/yyyy") +
-                    "\nData de Cadastro: " + c.DCadastro.ToString("dd/MM/yyyy");
+                    "\nData de Cadastro: " + c.DCadastro.ToString("dd/MM/yyyy") + "\n";
             return "";
         }
-        public static string GetClientFile(Cliente c)
+        public static void WriteFile(List<Cliente> listaCliente)
+        {
+            using (StreamWriter file = new StreamWriter(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\biltiful\biltiful\SysBil\Clientes.dat"))
+            {
+                foreach (Cliente c in listaCliente)
+                    file.WriteLine(GetClientFile(c));
+            }
+        }
+        public static void ReadFile(List<Cliente> listaCliente)
+        {
+            if(File.Exists(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\biltiful\biltiful\SysBil\Clientes.dat"))
+            {
+                using(StreamReader file = new StreamReader(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\biltiful\biltiful\SysBil\Clientes.dat"))
+                {
+                    string nome, cpf, nasc, uCom, dCad ;
+                    char sexo, situacao;
+
+                    while (!file.EndOfStream)
+                    {
+                        nasc = "";
+                        uCom = "";
+                        dCad = "";
+                        nome = "";
+                        cpf = "";
+                        sexo = ' ';
+                        situacao = ' ';
+
+                        char[] line = file.ReadLine().ToCharArray();
+
+                        for (int i = 0; i < 11; i++) // CPF
+                            cpf += line[i];
+
+                        for (int i = 11; i < 61 && line[i] != ' ' ; i++) // NOME
+                        {
+                            if (line[i] == '-')
+                                line[i] = ' ';
+                            nome += line[i];
+                        }
+
+                        // DATA NASCIMENTO
+                        for (int i = 64; i < 67; i++) // MM/
+                            nasc += line[i];
+                        for (int i = 61; i < 64; i++) // MM/dd/
+                            nasc += line[i];
+                        for (int i = 67; i < 71; i++) // MM/dd/yyyy
+                            nasc += line[i];
+
+                        sexo = line[71]; // SEXO
+
+                        // DATA ULTIMA COMPRA
+                        for (int i = 75; i < 78; i++) // MM/
+                            uCom += line[i];
+                        for (int i = 72; i < 75; i++) // MM/dd/
+                            uCom += line[i];
+                        for (int i = 78; i < 82; i++) // MM/dd/yyyy
+                            uCom += line[i];
+
+                        // DATA CADASTRO
+                        for (int i = 85; i < 88; i++) // MM/
+                            dCad += line[i];
+                        for (int i = 82; i < 85; i++) // MM/dd/
+                            dCad += line[i];
+                        for (int i = 88; i < 92; i++) // MM/dd/yyyy
+                            dCad += line[i];
+
+                        situacao = line[92];
+
+
+                        listaCliente.Add(new Cliente()
+                        {
+                            Cpf = cpf,
+                            Nome = nome,
+                            DNascimento = DateTime.Parse(nasc),
+                            Sexo = sexo,
+                            UCompra = DateTime.Parse(uCom),
+                            DCadastro = DateTime.Parse(dCad),
+                            Situacao = situacao
+                        });
+                    }
+                }
+            }
+        }
+        private static string GetClientFile(Cliente c)
         {
             return c.Cpf + NameToFile(c.Nome) + c.DNascimento.ToString("dd/MM/yyyy") +
                 c.Sexo + c.UCompra.ToString("dd/MM/yyyy") + c.DCadastro.ToString("dd/MM/yyyy") + c.Situacao;
