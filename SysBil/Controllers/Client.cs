@@ -12,7 +12,7 @@ namespace Controllers
     public class Client
     {
         // RETORNO DE DADOS DE CLIENTE
-        public static string GetClient(Cliente c) 
+        public static string Get(Cliente c) 
         {
             if(c.Situacao == 'A') // SE O CLIENTE FOR ATIVO RETORNA
                 return "\n>>>Cliente " + c.Nome + "<<<" +
@@ -30,7 +30,7 @@ namespace Controllers
             using (StreamWriter file = new StreamWriter(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\biltiful\biltiful\SysBil\Clientes.dat"))
             {
                 foreach (Cliente c in listaCliente)
-                    file.WriteLine(GetClientFile(c)); // ESCREVE A LISTA NO ARQUIVO SEPARADOS POR QUEBRA LINHA
+                    file.WriteLine(GetFile(c)); // ESCREVE A LISTA NO ARQUIVO SEPARADOS POR QUEBRA LINHA
             }
         }
 
@@ -46,56 +46,25 @@ namespace Controllers
                     string nome, cpf, nasc, uCom, dCad ;
                     char sexo, situacao;
 
+                    CultureInfo CultureBr = new CultureInfo(name: "pt-BR"); // DATA NO FORMATO BRASILEIRO
+
                     // ENQUANTO ARQUIVO EXISTIR
                     while (!file.EndOfStream)
                     {
-                        // INICIALIZACAO DE VARIAVEIS
-                        nasc = "";
-                        uCom = "";
-                        dCad = "";
-                        nome = "";
-                        cpf = "";
-                        sexo = ' ';
-                        situacao = ' ';
+                        string line = file.ReadLine(); // ARMAZENA A LINHA EM CARACTERES
 
-                        char[] line = file.ReadLine().ToCharArray(); // ARMAZENA A LINHA EM CARACTERES
-
-                        for (int i = 0; i < 11; i++) // LE CPF
-                            cpf += line[i];
-
-                        for (int i = 11; i < 61 && line[i] != ' ' ; i++) // LE NOME
-                        {
-                            if (line[i] == '-')
-                                line[i] = ' ';
-                            nome += line[i];
-                        }
-
-                        // LE DATA NASCIMENTO
-                        for (int i = 64; i < 67; i++) // MM/
-                            nasc += line[i];
-                        for (int i = 61; i < 64; i++) // MM/dd/
-                            nasc += line[i];
-                        for (int i = 67; i < 71; i++) // MM/dd/yyyy
-                            nasc += line[i];
-
+                        cpf = line.Substring(0, 11); // LE CPF
+                        
+                        nome = line.Substring(11, 50).Trim(); // LE NOME
+                        
+                        nasc = line.Substring(61, 10); // LE DATA DE NASCIMENTO
+                        
                         sexo = line[71]; // LE SEXO
 
-                        // LE DATA ULTIMA COMPRA
-                        for (int i = 75; i < 78; i++) // MM/
-                            uCom += line[i];
-                        for (int i = 72; i < 75; i++) // MM/dd/
-                            uCom += line[i];
-                        for (int i = 78; i < 82; i++) // MM/dd/yyyy
-                            uCom += line[i];
-
-                        // LE DATA CADASTRO
-                        for (int i = 85; i < 88; i++) // MM/
-                            dCad += line[i];
-                        for (int i = 82; i < 85; i++) // MM/dd/
-                            dCad += line[i];
-                        for (int i = 88; i < 92; i++) // MM/dd/yyyy
-                            dCad += line[i];
-
+                        uCom = line.Substring(72, 10); // LE DATA DE ULTIMA COMPRA
+                        
+                        dCad = line.Substring(82, 10); // LE DATA DE CADASTRO
+                        
                         situacao = line[92]; // LE SITUACAO
 
                         //ADICIONANDO CLIENTE A LISTA
@@ -103,10 +72,10 @@ namespace Controllers
                         {
                             Cpf = cpf,
                             Nome = nome,
-                            DNascimento = DateTime.Parse(nasc),
+                            DNascimento = DateTime.ParseExact(nasc, "d", CultureBr), // CONVERTE DATA BRASILEIRA PRA INGLESA
                             Sexo = sexo,
-                            UCompra = DateTime.Parse(uCom),
-                            DCadastro = DateTime.Parse(dCad),
+                            UCompra = DateTime.ParseExact(uCom, "d", CultureBr), // CONVERTE DATA BRASILEIRA PRA INGLESA
+                            DCadastro = DateTime.ParseExact(dCad, "d", CultureBr), // CONVERTE DATA BRASILEIRA PRA INGLESA
                             Situacao = situacao
                         });
                     }
@@ -117,7 +86,6 @@ namespace Controllers
         // VERIFICA CPF REPETE
         public static bool CpfRepeat(List<Cliente> lista, string cpf)
         {
-            Console.WriteLine("Entrou");
             foreach(Cliente i in lista)
             {
                 if(i.Cpf.Equals(cpf))
@@ -127,14 +95,14 @@ namespace Controllers
         }
 
         // RETORNA CLIENTE NO FORMATO PARA ARQUIVO
-        private static string GetClientFile(Cliente c)
+        private static string GetFile(Cliente c)
         {
             return c.Cpf + NameToFile(c.Nome) + c.DNascimento.ToString("dd/MM/yyyy") +
                 c.Sexo + c.UCompra.ToString("dd/MM/yyyy") + c.DCadastro.ToString("dd/MM/yyyy") + c.Situacao;
         }
 
         // PROCURA CLIENTE
-        public static Cliente SearchClient(List<Cliente> c, string value)
+        public static Cliente Search(List<Cliente> c, string value)
         {
             foreach(Cliente i in c)
                 if(i.Nome == value) 
@@ -143,7 +111,7 @@ namespace Controllers
         }
 
         // DELETA CLIENTE LOGICAMENTE
-        public static void DeleteClient(Cliente c)
+        public static void Delete(Cliente c)
         {
             c.Situacao = 'I';
         }
@@ -163,22 +131,10 @@ namespace Controllers
         // TRATAMENTO DO NOME PARA ENVIAR AO ARQUIVO
         private static string NameToFile(string value)
         {
-            char[] caracter = value.ToCharArray();
-            int amo = value.Length;
-            string name = "" ;
-
-            for (int i = 0; i < amo; i++) // TROCA O ESPACO PARA UMA '-'
-            {
-                if (caracter[i] == ' ')
-                    caracter[i] = '-';
-                name += caracter[i];
-            }
-
-            for (; amo < 50; amo++) // ADICIONA OS ESPAÇOS ATÉ O LIMITE DA VARIAVEL
-            {
-                name += ' ';
-            }
-            return name;
+            // ADICIONA OS ESPAÇOS ATÉ O LIMITE DA VARIAVEL
+            value = value.PadRight(50, ' '); 
+            
+            return value;
         }
 
         // VERIFICA SE O CPF É VERDADEIRO
