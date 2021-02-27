@@ -156,8 +156,7 @@ namespace SysBil
 		private static void ImpressaoControl(List<Cliente> lista)
         {
 			string opcao;
-			Cliente c;
-			int i = 0;
+			int i = -1;
             do
             {
 				Console.WriteLine("Escolha uma opção para impressão da fila de Clientes:" +
@@ -179,17 +178,17 @@ namespace SysBil
 						i = lista.Count - 1;
 						break;
 					case "3": // PROXIMO
-						Console.WriteLine(Client.Get(lista[i]));
 						i++;
+						if(i < lista.Count)
+							Console.WriteLine(Client.Get(lista[i]));
 						break;
 					case "4": // ANTERIOR
 						i--;
-						Console.WriteLine(Client.Get(lista[i]));
+						if (i >= 0)
+							Console.WriteLine(Client.Get(lista[i]));
 						break;
-
 				}
 			} while (i >= 0 && i <= (lista.Count - 1) && opcao != "0");
-			
         }
 		private static void atualizaCliente(Cliente c, List<Cliente> lista)
         {
