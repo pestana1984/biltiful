@@ -75,14 +75,14 @@ namespace SysBil
 
 						c = Client.Search(listaCliente, buscar); // LOCALIZA CLIENTE
 
-						if (c != null) // SE CLIENTE FOI ENCONTRADO
+						if (c != null && c.Situacao == 'A')
+						{ // SE CLIENTE FOI ENCONTRADO
 							atualizaCliente(c, listaCliente); // ATUALIZA O CAMPO QUE O CLIENTE DESEJA DELE
+							Console.WriteLine("Cliente Atualizado");
+							Client.WriteFile(listaCliente); // ADICIONA A LISTA NO ARQUIVO
+						}
 						else
 							Console.WriteLine("Cliente não encontrado");
-
-						Client.WriteFile(listaCliente); // ADICIONA A LISTA NO ARQUIVO
-
-						Console.WriteLine("Cliente Atualizado");
 
 						break;
 					case 6: // DELETAR LOGICAMENTE
@@ -92,11 +92,14 @@ namespace SysBil
 
 						c = Client.Search(listaCliente, buscar); // BUSCA CLIENTE
 
-						Client.Delete(c); // DELETA O CLIENTE LOGICAMENTE
-
-						Client.WriteFile(listaCliente); // ADICIONA A LISTA NO ARQUIVO
-
-						Console.WriteLine("Cliente Deletado logicamente");
+						if (c != null && c.Situacao == 'A')
+						{
+							Client.Delete(c); // DELETA O CLIENTE LOGICAMENTE
+							Console.WriteLine("Cliente Deletado logicamente");
+							Client.WriteFile(listaCliente); // ADICIONA A LISTA NO ARQUIVO
+						}
+						else
+							Console.WriteLine("Cliente não encontrado");
 
 						break;
                 }
@@ -156,7 +159,7 @@ namespace SysBil
 		private static void ImpressaoControl(List<Cliente> lista)
         {
 			string opcao;
-			int i = -1;
+			int i = 0;
             do
             {
 				Console.WriteLine("Escolha uma opção para impressão da fila de Clientes:" +
@@ -167,28 +170,40 @@ namespace SysBil
 							"\n0 - Encerrar impressão");
 				opcao = Console.ReadLine();
 
+				Console.Clear(); // LIMPA TELA CONSOLE
+
 				switch (opcao)
 				{
 					case "1": // INICIO
-						Console.WriteLine(Client.Get(lista[0]));
-						i = 1;
+						i = 0;
+						while (lista[i].Situacao != 'A' && i < lista.Count)
+							i++;
+						Console.WriteLine(Client.Get(lista[i]));
 						break;
 					case "2": // FIM
-						Console.WriteLine(Client.Get(lista[lista.Count - 1]));
 						i = lista.Count - 1;
+						while (lista[i].Situacao != 'A' && i >= 0)
+							i--;
+						Console.WriteLine(Client.Get(lista[i]));
 						break;
 					case "3": // PROXIMO
 						i++;
-						if(i < lista.Count)
-							Console.WriteLine(Client.Get(lista[i]));
+						if(i < lista.Count) { 
+						while (lista[i].Situacao != 'A' && i < lista.Count)
+							i++;
+						Console.WriteLine(Client.Get(lista[i]));
+						}
 						break;
 					case "4": // ANTERIOR
 						i--;
-						if (i >= 0)
+						if (i >= 0) { 
+							while (lista[i].Situacao != 'A' && i > 0)
+								i--;
 							Console.WriteLine(Client.Get(lista[i]));
+						}
 						break;
 				}
-			} while (i >= 0 && i <= (lista.Count - 1) && opcao != "0");
+			} while (i >= 0 && i < lista.Count && opcao != "0");
         }
 		private static void atualizaCliente(Cliente c, List<Cliente> lista)
         {
@@ -236,10 +251,13 @@ namespace SysBil
 			string nome;
 
 			do
-			{ // LAÇO PARA NÃO DEIXAR CAMPO VAZIO
+			{ // LAÇO PARA NÃO DEIXAR CAMPO VAZIO E MAIOR QUE 50 CARACTERES
 				Console.Write("Informe o Nome: ");
 				nome = Console.ReadLine();
-			} while (nome == "");
+				if (nome.Length > 50)
+					Console.WriteLine("Nome tem que ser menor que 50 caracteres");
+
+			} while (nome == "" || nome.Length > 50);
 
 			return nome;
 		}
@@ -252,6 +270,8 @@ namespace SysBil
 			{ // LAÇO VERIFICA SE O CAMPO É DIFERENTE DO SOLICITADO
 				Console.Write("Infome o Sexo M - Masculino F - Feminino: ");
 				sexo = char.Parse(Console.ReadLine().ToUpper());
+				if (sexo != 'M' && sexo != 'F')
+					Console.WriteLine("Caracter não reconhecido como sexo");
 			} while (sexo != 'M' && sexo != 'F');
 
 			return sexo;
