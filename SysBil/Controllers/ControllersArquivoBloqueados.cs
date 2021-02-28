@@ -7,14 +7,28 @@ using System.Threading.Tasks;
 
 namespace Controllers {
     public class ControllersArquivoBloqueados {
-        private static string path = @"..\..\..\Bloqueado.dat";
+        private static string path = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\Bloqueado.dat";
+        public static string DirectoryPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\";
+
         private static List<string> listaCnpj = new List<string>();
         private static string MenuString = "\n>>> Menu - Fornecedor Bloqueado <<<\n" + "1- Inserir CNPJ\n" +
-                    "2- Localizar Fornecedor Bloqueado\n" + "3- Liberar CNPJ\n" +
-                    "4- Voltar ao Menu Principal\n\n" + "Digite sua escolha: ";
+                                           "2- Localizar Fornecedor Bloqueado\n" + "3- Liberar CNPJ\n" +
+                                           "4- Voltar ao Menu Principal\n\n" + "Digite sua escolha: ";
+        public static bool CriarArquivo()
+        {
+            bool criou = false;
 
+            if (!Directory.Exists(DirectoryPath))
+            {
+                Directory.CreateDirectory(DirectoryPath);
+                criou = true;
+            }
+            return criou;
+        }
         public static void Menu() {
             string op = "";
+
+            CriarArquivo();
 
             while (op != "4") {
                 Console.Write(MenuString);
@@ -42,6 +56,21 @@ namespace Controllers {
                 }
             }
         }
+
+        public static List<string> LerBloqueados()
+        {
+            List<string> bloqueados = new List<string>();
+
+            using (StreamReader streamReader = new StreamReader(path))
+            {
+                while (!streamReader.EndOfStream)
+                {
+                    bloqueados.Add(streamReader.ReadLine());
+                }
+            }
+            return bloqueados;
+        }
+
         private static void Liberar() {
             string cnpj;
             int i = 0;

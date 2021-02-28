@@ -27,7 +27,7 @@ namespace SysBil
                 switch (op)
                 {
                     case "1":
-                        //ControllersFornecedor.Menu();
+                        ControllersFornecedor.Menu();
                         break;
 
                     case "2":
