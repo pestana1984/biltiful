@@ -73,5 +73,60 @@ namespace Controllers
 
             return materiaPrima;
         }
+        
+        		public static void LocalizarMPrima()
+		{
+			bool itemEncontrado = false;
+
+			Console.Write("Informe o ID da materia prima para localizar: ");
+			string buscarId = Console.ReadLine();
+
+			List<MPrima> MPrimas = ConverterParaLista();
+
+			foreach (var mprima in MPrimas)
+			{
+				if (mprima.Id == buscarId)
+				{
+					itemEncontrado = true;
+					Console.WriteLine(mprima.ToString());
+					break;
+				}
+			}
+
+			if (!itemEncontrado)
+				Console.WriteLine("Materia prima não cadastrada");
+		}
+
+		public static List<MPrima> ConverterParaLista() 
+		{
+			FileManipulator file = new FileManipulator() { Path = @"C:\git\biltiful\files", Name = "Materia.txt" };
+			string[] mprimaArquivadas = FileManupulatorController.LerArquivo(file);
+
+			List<MPrima> MPrimas = new List<MPrima>();
+
+			foreach (var mprima in mprimaArquivadas)
+			{
+				if (mprima.Length == 47)
+				{
+					string id = mprima.Substring(0, 6);
+					string nome = mprima.Substring(6, 20);
+					string uCompra = mprima.Substring(26, 10);
+					string dCompra = mprima.Substring(36, 10);
+					char situacao = char.Parse(mprima.Substring(46, 1));
+
+					MPrima mPrima = new MPrima
+					{
+						Id = id,
+						Nome = nome,
+						Ucompra = Convert.ToDateTime(uCompra),
+						Dcadastro = Convert.ToDateTime(dCompra),
+						Situacao = situacao
+					};
+
+					MPrimas.Add(mPrima);
+				}
+			}
+			return MPrimas;
+		}
     }
 }
