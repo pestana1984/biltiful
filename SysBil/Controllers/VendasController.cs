@@ -9,7 +9,7 @@ namespace Controllers
 {
     public class VendasController
     {
-        public static void CadastrarVenda(List<Venda> vendaProdutos)
+        public static Venda CadastrarVenda()
         {
             Cliente client = new Cliente();
             string buscaCpf;
@@ -70,8 +70,17 @@ namespace Controllers
 
                 if (contador < 3)
                 {
-                    Console.WriteLine("\nQuer informar mais produtos? S ou N \n");
+                    Console.WriteLine("\nQuer informar mais produtos? S ou N");
                     resposta = Console.ReadLine();
+                    if (contador == 1 && resposta.ToUpper() == "N")
+                    {                       
+                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, produto = "" });
+                    }
+                    else if(contador ==  0 && resposta.ToUpper() == "N")
+                    {
+                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, produto = "" });
+                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, produto = "" });
+                    }                  
 
                 }
                 else
@@ -85,22 +94,20 @@ namespace Controllers
                 somaTotal += precoItens;
 
 
+
+
             } while (resposta.ToUpper() != "N" && contador < 3);
 
-            Venda novaVenda = new Venda()
+            Console.WriteLine("\nO valor final é de: " + somaTotal);
+
+            return new Venda()
             {
                 Id = id,
                 Data = DateTime.Now,
                 ClienteCpf = buscaCpf,
                 ListaItensVendas = listaItemVendas,
                 ValorTotal = somaTotal
-
-
-            };
-            vendaProdutos.Add(novaVenda);
-            Console.WriteLine(novaVenda.ToString());
-
-            return;
+            }; 
         }
 
         public static void Localizar(List<Venda> acharVenda)
@@ -121,20 +128,21 @@ namespace Controllers
 
         public static string[] ConverterParaSalvar(List<Venda> listaVenda)
         {
+
             StringBuilder vendaSB = new StringBuilder();
             listaVenda.ForEach(venda =>
             {
-                vendaSB.Append(venda.Id);
-                vendaSB.Append(venda.ClienteCpf);
-                vendaSB.Append(venda.Data.ToString("dd/MM/yyyy"));
-                vendaSB.Append(venda.ValorTotal);
+                vendaSB.Append(venda.Id.ToString().PadRight(5, ' '));
+                vendaSB.Append(venda.ClienteCpf.PadRight(11, ' '));
+                vendaSB.Append(venda.Data.ToString("dd/MM/yyyy").PadRight(10, ' '));
+                vendaSB.Append(venda.ValorTotal.ToString().PadRight(8, ' '));
 
                 venda.ListaItensVendas.ForEach(itemVenda => 
                 {
-                    vendaSB.Append(itemVenda.produto);
-                    vendaSB.Append(itemVenda.Qtd);
-                    vendaSB.Append(itemVenda.Vunitario);
-                    vendaSB.Append(itemVenda.Titem);
+                    vendaSB.Append(itemVenda.produto.PadRight(5, ' '));
+                    vendaSB.Append(itemVenda.Qtd.ToString().PadRight(3, ' '));
+                    vendaSB.Append(itemVenda.Vunitario.ToString().PadRight(6, ' '));
+                    vendaSB.Append(itemVenda.Titem.ToString().PadRight(8, ' '));
                 });
 
                 vendaSB.AppendLine();

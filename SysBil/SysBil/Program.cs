@@ -12,10 +12,12 @@ namespace SysBil
     {
         static void Main(string[] args)
         {
-            Menu();
+            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\Vitor Faccio\Desktop\Nova pasta\SysBil\Arquivos", Name = "Venda.dat"};
+            FileManipulatorController.InicializarArquivo(arquivoVenda);
+            Menu(arquivoVenda);
             Console.ReadKey();          
         }
-        static void Menu()
+        static void Menu(FileManipulator arquivoVenda)
         {
             Venda venda = new Venda();
             List<Produto> produtos = new List<Produto>();
@@ -32,7 +34,8 @@ namespace SysBil
                 switch (resposta)
                 {
                     case "1":
-                        VendasController.CadastrarVenda(vendas);
+                        vendas.Add(VendasController.CadastrarVenda());
+                        FileManipulatorController.EscreverNoArquivo(arquivoVenda, VendasController.ConverterParaSalvar(vendas));
                         break;
 
                     case "2":
