@@ -151,5 +151,112 @@ namespace Controllers
 			}
 			return MPrimas;
 		}
+	
+	public static void EditMP()
+        {
+            List<MPrima> listToEdit = new List<MPrima>();
+            listToEdit = MPrimaController.ConverterParaLista();
+
+            bool itemEncontrado = false;
+
+            Console.Write("Informe o ID da materia prima para alterar: ");
+            string buscarId = Console.ReadLine();
+
+            for(int i=0;i< listToEdit.Count ;i++)
+            {
+                if (listToEdit[i].Id == buscarId)
+                {
+                    MPrima mp = new MPrima();
+                    itemEncontrado = true;
+                    Console.WriteLine("Essa é a matéria prima atual:");
+                    Console.WriteLine(listToEdit[i].ToString());
+                    Console.WriteLine("\nDeseja editar?(s/n):");
+                    if (Console.ReadLine().ToLower() != "n")
+                    {
+                        #region leitura
+                        //alterar dados
+                        string nome;
+                        do
+                        {
+                            Console.Write("Informe o nome (máximo 20 caracteres): ");
+                            nome = Console.ReadLine();
+                        } while (nome.Length > 20);
+                        //data ucompra
+                        bool deuCerto = false;
+                        Console.Write("Informe data da última compra (dd/MM/yyyy): ");
+                        DateTime ucompra;
+                        do
+                        {
+                            if (DateTime.TryParse(Console.ReadLine(), out ucompra))
+                            {
+                                deuCerto = true;
+                            }
+                        } while (!deuCerto);
+                        #endregion
+
+                        mp.Id = listToEdit[i].Id;
+                        mp.Nome = nome;
+                        mp.Ucompra = ucompra;
+                        mp.Dcadastro = listToEdit[i].Dcadastro;
+                        mp.Situacao = listToEdit[i].Situacao;
+
+                        listToEdit[i] = mp;
+                        MPrimaController.EscrevendoArquivo(listToEdit);
+
+                        Console.WriteLine("Essa é a matéria prima após alterações:");
+                        Console.WriteLine(listToEdit[i].ToString());
+                    }
+                    break;
+                }
+            }
+
+            if (!itemEncontrado)
+                Console.WriteLine("Materia prima não cadastrada");
+        }
+
+        public static void EditMPSituation()
+        {
+            List<MPrima> listToEdit = new List<MPrima>();
+            listToEdit = MPrimaController.ConverterParaLista();
+
+            bool itemEncontrado = false;
+
+            Console.Write("Informe o ID da materia prima para alterar: ");
+            string buscarId = Console.ReadLine();
+
+            for (int i = 0; i < listToEdit.Count; i++)
+            {
+                if (listToEdit[i].Id == buscarId)
+                {
+                    MPrima mp = new MPrima();
+                    itemEncontrado = true;
+                    Console.WriteLine("Essa é a matéria prima atual:");
+                    Console.WriteLine(listToEdit[i].ToString());
+                    Console.WriteLine("\nDeseja alterar a situação?(s/n):");
+                    if (Console.ReadLine().ToLower() != "n")
+                    {
+                      
+                        
+
+                        mp.Id = listToEdit[i].Id;
+                        mp.Nome = listToEdit[i].Nome;
+                        mp.Ucompra = listToEdit[i].Ucompra;
+                        mp.Dcadastro = listToEdit[i].Dcadastro;
+                        if (listToEdit[i].Situacao == 'A') mp.Situacao = 'I';
+                        else mp.Situacao = 'A';
+                        
+                        listToEdit[i] = mp;
+                        MPrimaController.EscrevendoArquivo(listToEdit);
+
+                        Console.WriteLine("Situação alterada com sucesso:");
+                        Console.WriteLine(listToEdit[i].ToString());
+                    }
+                    break;
+                }
+            }
+
+            if (!itemEncontrado)
+                Console.WriteLine("Materia prima não cadastrada");
+        }
 	}
 }
