@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    class Produto
+    public class Produto
     {
         public string CBarras { get; set; }
         public string Nome { get; set; }
