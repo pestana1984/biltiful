@@ -9,6 +9,27 @@ namespace Controllers
 {
 	public class MPrimaController
 	{
+	
+	public static void EscrevendoArquivo(List<MPrima> listMP)
+        {
+            string nome20pos, linha="";
+            string ucompra, dcadastro;
+            for (int i = 0; i < listMP.Count; i++)
+            {
+                
+                nome20pos = listMP[i].Nome.PadRight(20, ' ');
+                ucompra = listMP[i].Ucompra.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                dcadastro = listMP[i].Dcadastro.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                
+                linha += listMP[i].Id + nome20pos + ucompra + dcadastro + listMP[i].Situacao.ToString()+"\n";
+            }
+
+            using (StreamWriter fileWrite = new StreamWriter(@"C:\Users\55169\Documents\Projeto\Projeto Biltiful\biltiful\files\Materia.txt"))
+            {
+                fileWrite.WriteLine(linha);
+                fileWrite.Close();
+            }
+        }
 		public static MPrima Cadastrar()
 		{
 			//Gerador de id para matéria prima
