@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Controllers;
 
 namespace SysBil
 {
@@ -10,6 +11,7 @@ namespace SysBil
 	{
 		static void Main(string[] args)
 		{
+			ControllersArquivoBloqueados.Menu();
 		}
 	}
 }
