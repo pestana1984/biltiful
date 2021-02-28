@@ -12,7 +12,7 @@ namespace SysBil
     {
         static void Main(string[] args)
         {
-            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\Vitor Faccio\Desktop\Nova pasta\SysBil\Arquivos", Name = "Venda.dat"};
+            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
             FileManipulatorController.InicializarArquivo(arquivoVenda);
             Menu(arquivoVenda);
             Console.ReadKey();          
@@ -26,14 +26,19 @@ namespace SysBil
 
             do
             {
-                Console.WriteLine("1)Cadastrar produto");
-                Console.WriteLine("2)Cadastrar venda");
-                Console.WriteLine("0)Sair");
+                Console.WriteLine(">>> Vendas SysBil <<< ");
+                Console.WriteLine("\n1)Cadastrar Venda.");
+                Console.WriteLine("\n2)Localizar uma venda.");                
+                Console.WriteLine("\n3)Excluir uma venda.");
+                Console.WriteLine("\n4)Imprimir uma venda.");
+                Console.WriteLine("\n0)SAIR.");
+
                 resposta = Console.ReadLine();
 
                 switch (resposta)
                 {
                     case "1":
+                        vendas = VendasController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoVenda));
                         vendas.Add(VendasController.CadastrarVenda());
                         FileManipulatorController.EscreverNoArquivo(arquivoVenda, VendasController.ConverterParaSalvar(vendas));
                         break;
@@ -46,14 +51,18 @@ namespace SysBil
                         break;
 
                     case "4":
+                        vendas = VendasController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoVenda));
+                        vendas.ForEach(amostra=> Console.WriteLine(amostra));
+                        Console.ReadKey();
+                        break;
+
+                   
+                    default: Console.WriteLine("\nOpção inválida\n"); 
                         break;
                 }
             } while (resposta != "0");
 
-        }
-        
-        
-
-       
+        }    
+ 
     }
 }

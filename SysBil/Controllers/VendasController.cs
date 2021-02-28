@@ -1,6 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,7 +67,7 @@ namespace Controllers
                 Console.WriteLine("Informe o valor unitario: "); vunitario = double.Parse(Console.ReadLine());
 
                 precoItens = quantidade * vunitario;
-                listaItemVendas.Add(new ItensVenda { Qtd = quantidade, Vunitario = vunitario, Titem = precoItens, produto = nome });
+                listaItemVendas.Add(new ItensVenda { Qtd = quantidade, Vunitario = vunitario, Titem = precoItens, Produto = nome });
 
                 if (contador < 3)
                 {
@@ -74,12 +75,12 @@ namespace Controllers
                     resposta = Console.ReadLine();
                     if (contador == 1 && resposta.ToUpper() == "N")
                     {                       
-                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, produto = "" });
+                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, Produto = "" });
                     }
                     else if(contador ==  0 && resposta.ToUpper() == "N")
                     {
-                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, produto = "" });
-                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, produto = "" });
+                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, Produto = "" });
+                        listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, Produto = "" });
                     }                  
 
                 }
@@ -139,7 +140,7 @@ namespace Controllers
 
                 venda.ListaItensVendas.ForEach(itemVenda => 
                 {
-                    vendaSB.Append(itemVenda.produto.PadRight(5, ' '));
+                    vendaSB.Append(itemVenda.Produto.PadRight(5, ' '));
                     vendaSB.Append(itemVenda.Qtd.ToString().PadRight(3, ' '));
                     vendaSB.Append(itemVenda.Vunitario.ToString().PadRight(6, ' '));
                     vendaSB.Append(itemVenda.Titem.ToString().PadRight(8, ' '));
@@ -152,8 +153,42 @@ namespace Controllers
             return vendaSB.ToString().Split('\n');
         }
 
+        public static List<Venda> ConverterParaList(string[] LerDados)
+        {
+            List<Venda> vendas = new List<Venda>();
+            foreach (var venda in LerDados)
+            {
+                string id = venda.Substring(0, 5).Trim();
+                string clienteCpf = venda.Substring(5,11).Trim();
+                string data = venda.Substring(16, 10).Trim();
+                string valorTotal = venda.Substring(26,8).Trim();
 
+                Venda novaVenda = new Venda {Id= int.Parse(id), ClienteCpf = clienteCpf , Data =DateTime.ParseExact(data, "d", new CultureInfo(name: "pt-BR")), ValorTotal = double.Parse(valorTotal)}; 
+                string[] itemProdutos = new string[3];
+                
+                for (int i = 0,j = 34; i < 3; i++,j+=22)
+                {
+                    itemProdutos[i] = venda.Substring(j, 22);
+                }
 
+                List<ItensVenda> ListItensVendas = new List<ItensVenda>();
+                  
+                foreach (var objeto in itemProdutos)
+                {
+                    string produto = objeto.Substring(0, 5).Trim();
+                    string qtd = objeto.Substring(5, 3).Trim();
+                    string vunitario = objeto.Substring(8, 6).Trim();
+                    string titem = objeto.Substring(14, 8).Trim();
 
+                
+                   ListItensVendas.Add(new ItensVenda {Produto = produto, Qtd =int.Parse(qtd), Vunitario = double.Parse(vunitario), Titem = double.Parse(titem)});
+                   
+                }
+                novaVenda.ListaItensVendas = ListItensVendas;
+                vendas.Add(novaVenda);
+            }
+
+            return vendas;
+        }
     }
 }

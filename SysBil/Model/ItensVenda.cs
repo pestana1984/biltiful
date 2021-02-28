@@ -8,7 +8,7 @@ namespace Models
 {
     public class ItensVenda
     {
-        public string produto { get; set; }
+        public string Produto { get; set; }
 
         public int Qtd { get; set; }
 
@@ -19,7 +19,7 @@ namespace Models
 
         public override string ToString()
         {
-            return $"\nProduto: {produto}\nQuantidade: {Qtd}\nVunitario: {Vunitario}\nTotal do item: {Titem}\n";
+            return $"\nProduto: {Produto}\nQuantidade: {Qtd}\nVunitario: {Vunitario}\nTotal do item: {Titem}\n";
         }
     }
 }
