@@ -11,7 +11,6 @@ namespace Controllers
     {
         public static MPrima Cadastrar()
         {
-
             //Gerador de id para matéria prima
             //MP1234 -> formato | guardando resultados
             int[] valores = new int[100];
