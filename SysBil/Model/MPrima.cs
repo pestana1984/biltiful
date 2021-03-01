@@ -26,7 +26,7 @@ namespace Model
 
         public override string ToString()
         {
-            return $"ID: {Id}\nNome: {Nome}\nData Compra: {Ucompra}\nData Cadastro: {Dcadastro}\nSituação: {Situacao}";
+            return $"ID: {Id}\nNome: {Nome}\nData Compra: {Ucompra.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}\nData Cadastro: {Dcadastro.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}\nSituação: {Situacao}";
         }
     }
 }
