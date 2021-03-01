@@ -11,6 +11,66 @@ namespace Controllers
 {
 	public class MPrimaController
 	{
+
+		public static void MenuMateriaPrima()
+		{
+			int escolha = -1;
+			MPrima maprima = new MPrima();
+			List<MPrima> listaMateriaPrima = new List<MPrima>();
+			do
+			{
+				Console.Clear();
+				Console.WriteLine(" 1 - Cadastrar");
+				Console.WriteLine(" 2 - Localizar");
+				Console.WriteLine(" 3 - Impressão por Registro");
+				Console.WriteLine(" 4 - Editar");
+				Console.WriteLine(" 5 - Editar Situação");
+				Console.WriteLine(" 0 - Para sair");
+				Console.WriteLine();
+				Console.Write("Escolha uma das opções acima: ");
+				if (int.TryParse(Console.ReadLine(), out escolha))
+				{
+					if (escolha < 0 || escolha >= 6)
+					{
+						Console.WriteLine("Digite um Valor entre 1 e 5");
+						Console.ReadKey();
+					}
+				}
+				else
+				{
+					Console.WriteLine("Digite um Valor entre 1 e 5");
+					escolha = -1;
+					Console.ReadKey();
+				}
+				switch (escolha)
+				{
+					case 1:
+						maprima = Cadastrar();
+						listaMateriaPrima.Add(maprima);
+						EscrevendoArquivo(listaMateriaPrima);
+						Console.ReadKey();
+						break;                                                                                            
+					case 2:
+						LocalizarMPrima();
+						Console.ReadKey();
+						break;
+					case 3:
+						ImpressaoPorRegistro();
+						Console.ReadKey();
+						break;
+					case 4:
+						EditMP();
+						Console.ReadKey();
+						break;
+					case 5:
+						EditMPSituation();
+						Console.ReadKey();
+						break;
+				}
+			} while (escolha != 0);
+			Console.WriteLine("Precione Qualquer Tecla para Finalizar");
+			Console.ReadKey();
+		}
 		public static MPrima Cadastrar()
 		{
 			//Gerador de id para matéria prima
@@ -42,7 +102,7 @@ namespace Controllers
 			do
 			{
 				Console.Write("Informe o nome da matéria prima (máximo 20 caracteres): ");
-				nome = Console.ReadLine();
+				nome = TratamentoString();
 
 			} while (nome.Length > 20);
 
@@ -56,6 +116,7 @@ namespace Controllers
 				{
 					deuCerto = true;
 				}
+				else Console.WriteLine("Informe data da última compra (dd/MM/yyyy): ");
 			} while (!deuCerto);
 
 			//guardando data local
@@ -63,12 +124,12 @@ namespace Controllers
 			Console.Write("Data do cadastro: " + dcadastro + "\n");
 
 			//leitura e teste de situação
-			char situacao;
+			string situacao;
 			do
 			{
 				Console.Write("Situação (A ou I): ");
-				situacao = char.Parse(Console.ReadLine().ToUpper());
-			} while (situacao != 'A' && situacao != 'I');
+				situacao = TratamentoString().ToUpper();
+			} while (situacao != "A" && situacao != "I");
 
 			//instancia de obj materia prima
 			MPrima materiaPrima = new MPrima(id, nome, ucompra, dcadastro, situacao);
@@ -78,11 +139,12 @@ namespace Controllers
 		public static void LocalizarMPrima()
 		{
 			bool itemEncontrado = false;
-			string escolha, escolha2;
+			string escolha = " ", escolha2 = " ";
 
 			do
 			{
-
+				escolha = "";
+				escolha2 = "";
 				Console.Write("Informe o ID da materia prima para localizar: ");
 				string buscarId = TratamentoString();
 
@@ -99,15 +161,17 @@ namespace Controllers
 						break;
 					}
 				}
-
-				if (itemEncontrado)
-					Console.WriteLine("Deseja Continuar Localizando?(S/N)");
-				escolha2 = Console.ReadLine().ToUpper();
-
 				if (!itemEncontrado)
+				{
 					Console.WriteLine("Materia prima não cadastrada. Deseja sair?(S/N)");
-				escolha = Console.ReadLine().ToUpper();
-
+					escolha = TratamentoString().ToUpper();
+				}
+				if (itemEncontrado)
+				{
+					Console.WriteLine("Deseja Continuar Localizando?(S/N)");
+					escolha2 = TratamentoString().ToUpper();
+					itemEncontrado = false;
+				}
 			} while ((escolha == "N") || (escolha2 == "S"));
 
 		}
@@ -128,7 +192,7 @@ namespace Controllers
 						string nome = mprima.Substring(6, 20);
 						string uCompra = mprima.Substring(26, 10);
 						string dCompra = mprima.Substring(36, 10);
-						char situacao = char.Parse(mprima.Substring(46, 1));
+						string situacao = mprima.Substring(46, 1);
 
 						MPrima mPrima = new MPrima
 						{
@@ -215,7 +279,7 @@ namespace Controllers
 			do
 			{
 				Stratamento = Console.ReadLine();
-				if (Stratamento == "") Console.WriteLine("O campo não pode ser vazio!!! Digite novamente");
+				if (Stratamento == "") Console.Write("O campo não pode ser vazio!!! Digite novamente: ");
 			}
 			while (Stratamento == "");
 
@@ -323,8 +387,8 @@ namespace Controllers
 						mp.Nome = listToEdit[i].Nome;
 						mp.Ucompra = listToEdit[i].Ucompra;
 						mp.Dcadastro = listToEdit[i].Dcadastro;
-						if (listToEdit[i].Situacao == 'A') mp.Situacao = 'I';
-						else mp.Situacao = 'A';
+						if (listToEdit[i].Situacao == "A") mp.Situacao = "I";
+						else mp.Situacao = "A";
 
 						listToEdit[i] = mp;
 						MPrimaController.EscrevendoArquivo(listToEdit);
@@ -367,7 +431,7 @@ namespace Controllers
 
 			foreach (var mprima in MPrimas)
 			{
-				if (mprima.Id == buscarId)
+				if ((mprima.Id == buscarId) && (mprima.Situacao == "A"))
 				{
 					itemEncontrado = true;
 					break;
@@ -375,8 +439,9 @@ namespace Controllers
 			}
 
 			if (!itemEncontrado)
-				Console.WriteLine("Materia prima não cadastrada");
+				Console.WriteLine("Materia prima não cadastrada ou Inativa");
 			return itemEncontrado;
 		}
+	
 	}
 }
