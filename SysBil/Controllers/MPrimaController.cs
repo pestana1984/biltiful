@@ -97,6 +97,25 @@ namespace Controllers
             if (!itemEncontrado)
                 Console.WriteLine("Materia prima não cadastrada");
         }
+        public static bool LocalizarMPrima(string buscarId)
+        {
+            bool itemEncontrado = false;
+            
+            List<MPrima> MPrimas = ConverterParaLista();
+
+            foreach (var mprima in MPrimas)
+            {
+                if (mprima.Id == buscarId)
+                {
+                    itemEncontrado = true;
+                    break;
+                }
+            }
+
+            if (!itemEncontrado)
+                Console.WriteLine("Materia prima não cadastrada");
+            return itemEncontrado;
+        }
         public static List<MPrima> ConverterParaLista()
         {
             List<MPrima> MPrimas = new List<MPrima>();
