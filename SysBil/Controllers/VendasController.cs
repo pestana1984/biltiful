@@ -11,38 +11,40 @@ namespace Controllers
 {
     public class VendasController
     {
-        public static Venda CadastrarVenda(List<Inadimplente> listaDeInadimplentes)
+        public static Venda CadastrarVenda(List<Inadimplente> listaDeInadimplentes, List<Cliente> listaClientes, int id )
         {
+           
+           
             
-            Cliente client = new Cliente();
-            string buscaCpf;
-            
-            List<ItensVenda> listaItemVendas = new List<ItensVenda>();
-
-            Console.WriteLine("\nInforme o cpf do cliente: \n");
-            buscaCpf = Console.ReadLine();
-            Inadimplente iNada = new Inadimplente()
+            List<ItensVenda> listaItemVendas = new List<ItensVenda>();            
+            Cliente cliente =  ClienteController.Search(listaClientes);
+            if (cliente != null)
             {
-                Cpf = long.Parse(buscaCpf)
-            };
-
-            if (client.Cpf == buscaCpf)
-            {
-                if (inadimplenteController.VerificarInadimplente(iNada, listaDeInadimplentes))
+                Console.WriteLine(ClienteController.Get(cliente));
+                Inadimplente iNada = new Inadimplente()
                 {
-                    Console.WriteLine("Cliente inadimplente!");
-                    Console.ReadKey();
-                    return null;
+                    Cpf = long.Parse(cliente.Cpf)
+                };
+
+                if (ClienteController.CpfRepeat(listaClientes, cliente.Cpf))
+                {
+                    if (inadimplenteController.VerificarInadimplente(iNada, listaDeInadimplentes))
+                    {
+                        Console.WriteLine("Cliente inadimplente!");
+                        Console.ReadKey();
+                        return null;
+                    }
+
                 }
-                           
-            }
+            }            
             else
             {
-                Console.WriteLine("\n O Cliente nao esta cadastrado!\n");
-                //LUIZ CHAMAR O CADASTRO DO CLIENTE
+                Console.WriteLine("\n O Cliente não esta cadastrado!\n");
+                return null;
             }
 
-            int id = 0;
+
+            id++;
             int contador = 0;
             string nome, resposta = "";
             int quantidade;
@@ -51,19 +53,13 @@ namespace Controllers
             do
             {
                 if (contador == 0)
-                {
-                    /*for (int i = 0; i < 999; i++ )
-                    {                       
-                        
-                        break;
-                    }*/
+                {                    
+                    Console.WriteLine($"O id da compra é: {id}" );
 
-                    Console.WriteLine("O id da compra é: ");
-                    id = int.Parse(Console.ReadLine());
-
+                    
                 }
 
-                Console.WriteLine("Informe o nome do produto: "); nome = Console.ReadLine();
+                Console.WriteLine("Informe o Id do produto: "); nome = Console.ReadLine();
 
                 do
                 {
@@ -80,12 +76,12 @@ namespace Controllers
                 precoItens = quantidade * vunitario;
                 listaItemVendas.Add(new ItensVenda { Qtd = quantidade, Vunitario = vunitario, Titem = precoItens, Produto = nome });
 
-                if (contador < 3)
+                if (contador < 2)
                 {
                     Console.WriteLine("\nQuer informar mais produtos? S ou N");
                     resposta = Console.ReadLine();
                     if (contador == 1 && resposta.ToUpper() == "N")
-                    {                       
+                    {                      
                         listaItemVendas.Add(new ItensVenda { Qtd = 0, Vunitario = 0, Titem = 0, Produto = "" });
                     }
                     else if(contador ==  0 && resposta.ToUpper() == "N")
@@ -105,41 +101,96 @@ namespace Controllers
 
                 somaTotal += precoItens;
 
-
-
-
             } while (resposta.ToUpper() != "N" && contador < 3);
 
             Console.WriteLine("\nO valor final é de: " + somaTotal);
+            Console.WriteLine("\nVenda finalizada!!!");
 
             return new Venda()
             {
                 Id = id,
                 Data = DateTime.Now,
-                ClienteCpf = buscaCpf,
+                ClienteCpf = cliente.Cpf,
                 ListaItensVendas = listaItemVendas,
                 ValorTotal = somaTotal
             }; 
         }
 
-        public static void Localizar(List<Venda> acharVenda)
+        public static Venda Localizar(List<Venda> acharVenda)
         {
-            
-
             int id;
 
             Console.WriteLine("Informe o id da compra: ");
             id = int.Parse(Console.ReadLine());
 
             Venda encontrada = acharVenda.Find(venda => venda.Id.Equals(id));
-           
-            
+
+            Console.WriteLine("-------------> LOCALIZANDO ------------->>>>");
 
             Console.WriteLine(encontrada);
-
-
+            Console.WriteLine("APERTE QUALQUER TECLA PARA CONTINUAR\n");
+            Console.ReadKey();
+            return encontrada;
+        }
+        public static void ExcluirVenda(List<Venda> encontrar, FileManipulator arquivoVenda)
+        {             
+            encontrar.Remove(Localizar(encontrar));
+            Console.WriteLine("Venda excluida do sistema!");
+            FileManipulatorController.EscreverNoArquivo(arquivoVenda, ConverterParaSalvar(encontrar));
 
         }
+
+        public static void PrintVenda(List<Venda> encontrouVenda)
+        {
+            int cont=0;
+            string resposta;
+            do
+            {                 
+                Console.WriteLine("\n------->>> Vendas SysBil <<<-------");
+                Console.WriteLine("\n1 - Inicio da fila" +
+                            "\n2 - Fim da fila" +
+                            "\n3 - Próximo da fila" +
+                            "\n4 - Anterior da fila" +
+                            "\n0 - Encerrar impressão");
+
+                resposta = Console.ReadLine();
+
+                switch (resposta)
+                {
+                    case "1": // inicio                         
+                        Console.WriteLine(encontrouVenda[0]);
+                        cont = 0; 
+                        break;
+
+                    case "2": // fim 
+                        Console.WriteLine(encontrouVenda[encontrouVenda.Count-1]);
+                        cont = encontrouVenda.Count - 1;
+                        break;
+
+                    case "3": // próximo 
+                        cont++;
+                        if (cont < encontrouVenda.Count)
+                        {
+                            Console.WriteLine(encontrouVenda[cont]);
+                        }                                                
+                        break;
+
+                    case "4": // anterior 
+                        cont--;
+                        if (cont >= 0)
+                        {
+                            Console.WriteLine(encontrouVenda[cont]);
+                        }                       
+                        break;
+
+                    case "5": //encerrar  
+
+                        break;
+                }
+
+            } while (resposta != "0");            
+        }
+        
 
         public static string[] ConverterParaSalvar(List<Venda> listaVenda)
         {
@@ -193,7 +244,6 @@ namespace Controllers
                     string qtd = objeto.Substring(5, 3).Trim();
                     string vunitario = objeto.Substring(8, 6).Trim();
                     string titem = objeto.Substring(14, 8).Trim();
-
                 
                    ListItensVendas.Add(new ItensVenda {Produto = produto, Qtd =int.Parse(qtd), Vunitario = double.Parse(vunitario), Titem = double.Parse(titem)});
                    
@@ -201,7 +251,6 @@ namespace Controllers
                 novaVenda.ListaItensVendas = ListItensVendas;
                 vendas.Add(novaVenda);
             }
-
             return vendas;
         }
     }

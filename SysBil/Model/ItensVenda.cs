@@ -19,7 +19,11 @@ namespace Models
 
         public override string ToString()
         {
-            return $"\nProduto: {Produto}\nQuantidade: {Qtd}\nVunitario: {Vunitario}\nTotal do item: {Titem}\n";
+            if (Produto != "")
+            {
+              return $"\nProduto: {Produto}\nQuantidade: {Qtd}\nVunitario: {Vunitario}\nTotal do item: {Titem}\n";
+            }             
+            return "";             
         }
     }
 }

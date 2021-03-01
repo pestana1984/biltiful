@@ -15,7 +15,7 @@ namespace Controllers
         // VIEWS
 
         // REGISTRAR CLIENTE
-        public static Cliente Register(List<Cliente> lista)
+        public static void Register(List<Cliente> lista)
         {
             // VARIAVEIS
             string cpf, nome;
@@ -30,8 +30,8 @@ namespace Controllers
 
             dNascimento = ReadDNascimento(); // LE A DATA DE NASCIMENTO
 
-            return new Cliente() // RETORNA O CLIENTE
-            {
+            Cliente novoCliente = new Cliente()
+            {                 
                 Cpf = cpf,
                 Nome = nome,
                 DNascimento = dNascimento,
@@ -40,8 +40,11 @@ namespace Controllers
                 Sexo = sexo,
                 Situacao = 'A'
             };
+            lista.Add(novoCliente);
+            lista = lista.OrderBy(x => x.Nome).ToList();
+            WriteFile(lista);            
         }
-
+            
         // LE CPF
         public static string ReadCpf(List<Cliente> lista)
         {
@@ -107,6 +110,10 @@ namespace Controllers
             { // LAÇO VERIFICA A IDADE COM A DATA DE NASCIMENTO INFORMADA
                 Console.Write("Informe sua Data de Nascimento: ");
                 dNascimento = DateTime.ParseExact(Console.ReadLine(), "d", CultureBr); // CONVERTE DATA BRASILEIRA PRA INGLESA;
+                if (!CheckAge(dNascimento))
+                {
+                    Console.WriteLine("Necessário ser maior de idade!!!");
+                }
             } while (!CheckAge(dNascimento));
             return dNascimento;
         }
@@ -167,14 +174,16 @@ namespace Controllers
                 {
                     case "1": // INICIO
                         i = 0;
-                        while (lista[i].Situacao != 'A' && i < lista.Count)
+                        while (lista[i]?.Situacao != 'A' && i < lista.Count)
                             i++;
+                        Console.Clear();
                         Console.WriteLine(Get(lista[i]));
                         break;
                     case "2": // FIM
                         i = lista.Count - 1;
-                        while (lista[i].Situacao != 'A' && i >= 0)
+                        while (lista[i]?.Situacao != 'A' && i >= 0)
                             i--;
+                        Console.Clear();
                         Console.WriteLine(Get(lista[i]));
                         break;
                     case "3": // PROXIMO
@@ -182,8 +191,9 @@ namespace Controllers
                             i++;
                         if (i < lista.Count)
                         {
-                            while (lista[i].Situacao != 'A' && i < lista.Count - 1)
+                            while (lista[i]?.Situacao != 'A' && i < lista.Count - 1)
                                 i++;
+                            Console.Clear();
                             Console.WriteLine(Get(lista[i]));
                         }
                         break;
@@ -191,8 +201,9 @@ namespace Controllers
                         i--;
                         if (i >= 0)
                         {
-                            while (lista[i].Situacao != 'A' && i > 0)
+                            while (lista[i]?.Situacao != 'A' && i > 0)
                                 i--;
+                            Console.Clear();
                             Console.WriteLine(Get(lista[i]));
                         }
                         break;
@@ -216,7 +227,7 @@ namespace Controllers
         // ESCRITA DE ARQUIVO
         public static void WriteFile(List<Cliente> listaCliente)
         {
-            using (StreamWriter file = new StreamWriter(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\Grupo2\biltiful\SysBil\Arquivos\Clientes.dat"))
+            using (StreamWriter file = new StreamWriter(@"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos\Clientes.dat"))
             {
                 foreach (Cliente c in listaCliente)
                     file.WriteLine(GetFile(c)); // ESCREVE A LISTA NO ARQUIVO SEPARADOS POR QUEBRA LINHA
@@ -227,9 +238,9 @@ namespace Controllers
         public static void ReadFile(List<Cliente> listaCliente)
         {
             // SE O ARQUIVO EXISTIR
-            if (File.Exists(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\Grupo2\biltiful\SysBil\Arquivos\Clientes.dat"))
+            if (File.Exists(@"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos\Clientes.dat"))
             {
-                using (StreamReader file = new StreamReader(@"C:\Users\Luiz Sena\source\repos\LuizGustavoSena\Grupo2\biltiful\SysBil\Arquivos\Clientes.dat"))
+                using (StreamReader file = new StreamReader(@"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos\Clientes.dat"))
                 {
                     // VARIAVEIS
                     string nome, cpf, nasc, uCom, dCad;
@@ -295,10 +306,10 @@ namespace Controllers
         {
             string value;
 
-            Console.Write("Informe o nome do Cliente: ");
+            Console.Write("Informe o CPF do Cliente: ");
             value = Console.ReadLine();
             foreach (Cliente i in c)
-                if (i.Nome == value)
+                if (i.Cpf == value)
                     return i;
 
             return null;

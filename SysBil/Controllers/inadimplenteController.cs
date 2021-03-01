@@ -16,10 +16,13 @@ namespace Controllers
             Console.WriteLine("Insira o Cpf :");
             long cpf = long.Parse(Console.ReadLine());
 
+            Console.Write(">>> CPF cadastrado com sucesso!! <<< \n\n");
             return new Inadimplente()
             {
                 Cpf = cpf
             };
+            
+           
         }
         static public List<Inadimplente> ConverterParaList(string[] dadosCru)
         {
@@ -70,24 +73,7 @@ namespace Controllers
                 Console.WriteLine("\n>>>Cpf não excluido,pois não se encontra no registro<<<\n");
                 return inadimplentes;
             }
-        }
-        static public List<Inadimplente> LocalizarInadimplentes(List<Inadimplente> inadimplentes, string pesqCpf)
-        {
-            
-            Console.WriteLine("Iforme o Cpf para ser localizado:");
-            pesqCpf =Console.ReadLine();
-
-            if(inadimplentes.Exists(inadimplente => inadimplente.Cpf.Equals(pesqCpf)))
-            {
-                Console.WriteLine("CPF Encontrado na lista de risco");
-            }
-            else
-            {
-                Console.WriteLine("CPF não se encontra na lista!");
-            }
-            return inadimplentes;
-
-        }
+        }       
     }
 }
 
