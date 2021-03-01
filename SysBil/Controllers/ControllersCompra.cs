@@ -383,60 +383,40 @@ namespace Controllers
         }
         private static void RemoverCompra()
         {
-            int i = 0;
-            bool encontrou = false;
-            List<Compra> compras = LerCompra();
+            string linha;
+            bool achou = false;
 
-            if (!File.Exists(CompraPath))
-            {
-                Console.WriteLine("\nNenhuma Compra Realizada!!\n");
-                return;
-            }
+            List<string> compras = new List<string>();
 
             Console.Write("\nID da compra que deseja remover: ");
-            int id = int.Parse(Console.ReadLine());
-
+            string id = Console.ReadLine();
             Console.Clear();
 
-            foreach (Compra compra in compras)
+            using (StreamReader streamReader = new StreamReader(CompraPath))
             {
-                if (compra.Id == id)
+                while (!streamReader.EndOfStream)
                 {
-                    encontrou = true;
-                    break;
+                    linha = streamReader.ReadLine();
+                    if (linha.Substring(66, 5) != id)
+                    {
+                        compras.Add(linha);
+                    }
+                    else achou = true;
                 }
-                i++;
             }
-
-            if (!encontrou)
+            if (!achou)
             {
-                Console.WriteLine("\nCompra não localizada!!\n");
+                Console.WriteLine("\nNenhuma compra com esse ID!!\n");
                 return;
             }
-
-            compras.RemoveAt(i);
-
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < 3; j++)
+            using (StreamWriter streamWriter = new StreamWriter(CompraPath))
             {
-                sb.Append(compras[i].Mprima[j]);
-                sb.Append($"{compras[i].Qtd[j]:000.00}".Replace(".", ""));
-                sb.Append($"{compras[i].Vunitario[j]:000.00}".Replace(".", ""));
-                sb.Append($"{compras[i].Titem[j]:0000.00}".Replace(".", ""));
-            }
-            sb.Append($"{compras[i].Id:D5}");
-            sb.Append($"{compras[i].Dcompra:ddMMyyyy}");
-            sb.Append(compras[i].CNPJ);
-            sb.Append($"{compras[i].Vtotal:00000.00}".Replace(".", ""));
-
-            using (StreamWriter sw = new StreamWriter(CompraPath))
-            {
-                foreach (Compra compra in compras)
+                for (int l = 0; l < compras.Count; l++)
                 {
-                    sw.WriteLine(sb.ToString());
+                    streamWriter.WriteLine(compras[l]);
                 }
             }
-            Console.WriteLine("\nCompra removida com sucesso!!\n");
+            Console.WriteLine("\nCompra excluida com sucesso!!\n");
         }
     }
 }
