@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace Controllers {
     public class ControllersFornecedor {
-        public static string Path = @"\temp\Biltiful\biltiful\SysBil\Controllers";
+        public static string Path = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers";
         public static string ArquivoPath = $@"{Path}\Fornecedor.dat";
         public static List<Fornecedor> fornecedores { get; set; }
 

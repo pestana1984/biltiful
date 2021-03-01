@@ -12,8 +12,8 @@ namespace Controllers
     public class ControllersCompra
     {
 
-        private static string mPrimaPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\mprima.dat";
-        private static string CompraPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\Compra.dat";
+        private static string mPrimaPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\mprima.dat";
+        private static string CompraPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\Compra.dat";
 
         public static List<Compra> LerCompra()
         {
@@ -73,7 +73,6 @@ namespace Controllers
             }
             return list;
         }
-
         public static void Menu()
         {
             string menu = "";
@@ -89,11 +88,30 @@ namespace Controllers
                         Console.ReadKey();
                         Console.Clear();
                         break;
-                    case "2":
+                    case "2"://Localizar
+                        List<Compra> list = LerCompra();
+                        bool encontrou = false;
+
+                        Console.WriteLine("Digite o ID da compra");
+                        int id = int.Parse(Console.ReadLine());
+
+                        for (int i = 0; i < list.Count; i++)
+                        {
+                            if (list.ElementAt(i).Id == id)
+                            {
+                                Console.WriteLine(list.ElementAt(i));
+                                encontrou = true;
+                            }
+                        }
+                        if (!encontrou)
+                        {
+                            Console.WriteLine("ID nao encontrado!");
+                        }
                         break;
-                    case "3":
+                    case "3":// remover
+                        //RemoverCompra();
                         break;
-                    case "4":
+                    case "4"://Imprimir
                         Impressao();
                         break;
                     default:
@@ -162,7 +180,6 @@ namespace Controllers
                     LinhaVazia();
                 }
 
-
                 StringBuilder sb = new StringBuilder();
 
                 sb.Append($"{id.ToString("D5")}");
@@ -190,20 +207,42 @@ namespace Controllers
                 Console.Write("Digite a quantidade que deseja desse item: ");
                 qtd = float.Parse(Console.ReadLine());
 
-                if (qtd <= 0 || qtd > 999.99)
+                if (qtd < 1 || qtd > 999.99)
                 {
-                    Console.WriteLine("\nA quantidade deve estar entre 0 e 999,99");
-                    continue;
+                    Console.WriteLine("\nA quantidade deve estar entre 1 e 999,99");
                 }
-
-                Console.Write("Valor unitário do item: ");
-                vunitario = float.Parse(Console.ReadLine());
-
-                titem = vunitario * qtd;
-                break;
+                else
+                {
+                    Console.Write("Valor unitário do item: ");
+                    vunitario = float.Parse(Console.ReadLine());
+                    if (vunitario < 1000 && vunitario > 0)
+                    {
+                        titem = vunitario * qtd;
+                        if (titem > 9999.99)
+                        {
+                            Console.WriteLine("\nO valor total de cada item deve ser no maximo 9999,99");
+                        }
+                        else
+                        {
+                            vtotal += titem;
+                            if (vtotal < 99999.99)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nO valor total da compra deve ser no maximo 99999,99");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nO valor deve estar entre 1 e 999,99");
+                    }
+                }
             } while (true);
 
-            vtotal += titem;
+
 
             StringBuilder sb = new StringBuilder();
 
@@ -219,7 +258,6 @@ namespace Controllers
                 streamWriter.Write(convertido);
             }
         }
-
         private static int procurarMateriaPrima(string path, ref string mprima)
         {
             string id;
@@ -270,12 +308,13 @@ namespace Controllers
             int i = 0;
 
             string op1;
-            Console.WriteLine($"\n{list.ElementAt(i)}");
-            ControllersFornecedor.fornecedores = ControllersFornecedor.LerArquivo();
-            Console.WriteLine(ControllersFornecedor.fornecedores.Find(l => l.Cnpj == list.ElementAt(i).CNPJ));
-
             do
             {
+                Console.WriteLine($"\n{list.ElementAt(i)}");
+                ControllersFornecedor.fornecedores = ControllersFornecedor.LerArquivo();
+                Console.WriteLine(ControllersFornecedor.fornecedores.Find(l => l.Cnpj == list.ElementAt(i).CNPJ));
+
+
                 Console.WriteLine("\nO que deseja fazer a seguir?\n" +
                                   "1 - Proximo\n" +
                                   "2 - Anterior\n" +
@@ -288,17 +327,18 @@ namespace Controllers
                     case "1":
                         if (i == (list.Count - 1))
                         {
-                            Console.WriteLine("Você esta na ultima posicao");
+                            Console.Clear();
+                            Console.WriteLine("Você esta no fim da lista");
                         }
                         else
                         {
                             i++;
-
                         }
                         break;
                     case "2":
                         if (i == 0)
                         {
+                            Console.Clear();
                             Console.WriteLine("Você esta no inicio da lista");
                         }
                         else
@@ -308,14 +348,17 @@ namespace Controllers
                         }
                         break;
                     case "3":
+                        Console.Clear();
                         i = 0;
 
                         break;
                     case "4":
+                        Console.Clear();
                         i = list.Count - 1;
 
                         break;
                     case "5":
+                        Console.Clear();
                         break;
                     default:
                         Console.WriteLine("Digite uma opção do menu");
@@ -324,8 +367,55 @@ namespace Controllers
             } while (op1 != "5");
 
         }
+        /*private static void RemoverCompra()
+        {
+            int i = 0;
+            bool encontrou = false;
+            List<Compra> compras = LerCompra();
 
+            foreach (Compra compra in compras)
+            {
+                Console.WriteLine(compra);
+            }
 
+            if (!File.Exists(CompraPath))
+            {
+                Console.WriteLine("\nNenhuma Compra Realizada!!\n");
+                return;
+            }
+
+            Console.Write("\nID da compra que deseja remover: ");
+            string id = Console.ReadLine();
+
+            Console.Clear();
+
+            foreach (Compra compra in compras)
+            {
+                if (compra.ToString().Substring(75, 5) == id)
+                {
+                    encontrou = true;
+                    break;
+                }
+                i++;
+            }
+
+            if (!encontrou)
+            {
+                Console.WriteLine("\nCompra não localizada!!\n");
+                return;
+            }
+
+            compras.RemoveAt(i);
+
+            using (StreamWriter sw = new StreamWriter(CompraPath))
+            {
+                foreach (Compra compra in compras)
+                {
+                    sw.WriteLine(compra.ToString().Replace(",", ""));
+                }
+            }
+            Console.WriteLine("\nCompra removida com sucesso!!\n");
+        }*/
     }
 }
 

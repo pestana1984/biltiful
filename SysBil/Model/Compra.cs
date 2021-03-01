@@ -21,17 +21,20 @@ namespace Models
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
+            sb.Append("Registro da Compra: \n\n");
             for (int i = 0; i < Qtd.Length; i++)
             {
-                sb.Append(Mprima[i]);
-                sb.Append($"{Qtd[i]:000.00}".Replace(".", ""));
-                sb.Append($"{Vunitario[i]:000.00}".Replace(".", ""));
-                sb.Append($"{Titem[i]:0000.00}".Replace(".", ""));
+                if (Mprima[i] != "000000")
+                {
+                    sb.Append($"ID Materia Prima: {Mprima[i]}\n");
+                    sb.Append($"Unidades da MP: {Qtd[i]}\n");
+                    sb.Append($"Valor unitário: R${Vunitario[i]}\n");
+                    sb.Append($"Valor total do item {Mprima[i]}: R${Titem[i]:F2}\n");
+                }
             }
-            sb.Append($"{Id:D5}");
-            sb.Append($"{Dcompra:ddMMyyyy}");
-            sb.Append(CNPJ);
-            sb.Append($"{Vtotal:00000.00}".Replace(".", ""));
+            sb.Append($"ID: {Id}\n");
+            sb.Append($"Data da Compra: {Dcompra.Day}/{Dcompra.Month}/{Dcompra.Year}\n");
+            sb.Append($"Valor total:" + $"R${Vtotal:F2}\n");
             return sb.ToString();
         }
 
