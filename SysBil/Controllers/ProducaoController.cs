@@ -98,5 +98,37 @@ namespace Controllers
                 fileWrite.Close();
             }
         }
+        
+        public static void ExcluirProducao() 
+        {
+            List<Producao> listaProducao;
+            int idProducao;
+
+            do
+            {
+                Console.Write("Informe o ID da Producao que deseja excluir: ");
+            }while(!int.TryParse(Console.ReadLine(), out idProducao));
+
+
+            if (LocalizarProducao(idProducao))
+            {
+                string continuar;
+				Console.Write("Tem certeza dessa exclusão?? s/n: ");
+                continuar = Console.ReadLine();
+                if(continuar.ToLower() == "s")
+                {
+                    listaProducao = ConverterParaLista();
+
+                    if (listaProducao.Remove(listaProducao.Find(producao => producao.Id.Equals(idProducao))))
+                    {
+                        EscrevendoArquivo(listaProducao);
+						Console.WriteLine("Registro de produção excluido com sucesso!!!");
+                    }
+                }
+                else
+					Console.WriteLine("Exclusão cancelada.");
+            }
+        }
+        
     }
 }
