@@ -12,8 +12,8 @@ namespace Controllers
     public class ControllersCompra
     {
 
-        private static string mPrimaPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\mprima.dat";
-        private static string CompraPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\Compra.dat";
+        private static string mPrimaPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\mprima.dat";
+        private static string CompraPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\Compra.dat";
 
         public static List<Compra> LerCompra()
         {
@@ -419,10 +419,10 @@ namespace Controllers
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < 3; j++)
             {
-                sb.Append(compras[i].Mprima[i]);
-                sb.Append($"{compras[i].Qtd[i]:000.00}".Replace(".", ""));
-                sb.Append($"{compras[i].Vunitario[i]:000.00}".Replace(".", ""));
-                sb.Append($"{compras[i].Titem[i]:0000.00}".Replace(".", ""));
+                sb.Append(compras[j].Mprima[j]);
+                sb.Append($"{compras[j].Qtd[j]:000.00}".Replace(".", ""));
+                sb.Append($"{compras[j].Vunitario[j]:000.00}".Replace(".", ""));
+                sb.Append($"{compras[j].Titem[j]:0000.00}".Replace(".", ""));
             }
             sb.Append($"{compras[i].Id:D5}");
             sb.Append($"{compras[i].Dcompra:ddMMyyyy}");
