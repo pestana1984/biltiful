@@ -21,19 +21,6 @@ namespace Controllers
             string[] lines = File.ReadAllLines(CompraPath);
             for (int i = 0; i < lines.Length; i++)
             {
-                int id = int.Parse(lines[i].Substring(66, 5));
-                DateTime dcompra = DateTime.ParseExact(lines[i].Substring(71, 8), "ddMMyyyy", CultureInfo.InvariantCulture);
-                string cnpj = lines[i].Substring(79, 14);
-                float vtotal = float.Parse(lines[i].Substring(93, 7)) / 100;
-
-                Compra compra = new Compra()
-                {
-                    Id = id,
-                    Dcompra = dcompra,
-                    CNPJ = cnpj,
-                    Vtotal = vtotal,
-                };
-
                 int quantidade = 1;
 
                 if (lines[i].Substring(44, 6) != " ")
@@ -45,31 +32,46 @@ namespace Controllers
                     quantidade = 2;
                 }
 
-                compra.Mprima = new string[quantidade];
-                compra.Qtd = new float[quantidade];
-                compra.Vunitario = new float[quantidade];
-                compra.Titem = new float[quantidade];
-
-                int a = 0;
-                int b = 6;
-                int c = 11;
-                int d = 16;
-
-                for (int j = 0; j < quantidade; j++)
+                if (i < quantidade)
                 {
+                    int id = int.Parse(lines[i].Substring(66, 5));
+                    DateTime dcompra = DateTime.ParseExact(lines[i].Substring(71, 8), "ddMMyyyy", CultureInfo.InvariantCulture);
+                    string cnpj = lines[i].Substring(79, 14);
+                    float vtotal = float.Parse(lines[i].Substring(93, 7)) / 100;
 
-                    compra.Mprima[j] = lines[i].Substring(a, 6);
-                    compra.Qtd[j] = float.Parse(lines[i].Substring(b, 5)) / 100;
-                    compra.Vunitario[j] = float.Parse(lines[i].Substring(c, 5)) / 100;
-                    compra.Titem[j] = float.Parse(lines[i].Substring(d, 6)) / 100;
+                    Compra compra = new Compra()
+                    {
+                        Id = id,
+                        Dcompra = dcompra,
+                        CNPJ = cnpj,
+                        Vtotal = vtotal,
+                    };
 
-                    a += 22;
-                    b += 22;
-                    c += 22;
-                    d += 22;
+                    compra.Mprima = new string[quantidade];
+                    compra.Qtd = new float[quantidade];
+                    compra.Vunitario = new float[quantidade];
+                    compra.Titem = new float[quantidade];
+
+                    int a = 0;
+                    int b = 6;
+                    int c = 11;
+                    int d = 16;
+
+                    for (int j = 0; j < quantidade; j++)
+                    {
+
+                        compra.Mprima[j] = lines[i].Substring(a, 6);
+                        compra.Qtd[j] = float.Parse(lines[i].Substring(b, 5)) / 100;
+                        compra.Vunitario[j] = float.Parse(lines[i].Substring(c, 5)) / 100;
+                        compra.Titem[j] = float.Parse(lines[i].Substring(d, 6)) / 100;
+
+                        a += 22;
+                        b += 22;
+                        c += 22;
+                        d += 22;
+                    }
+                    list.Add(compra);
                 }
-
-                list.Add(compra);
             }
             return list;
         }
@@ -109,7 +111,7 @@ namespace Controllers
                         }
                         break;
                     case "3":// remover
-                        //RemoverCompra();
+                        RemoverCompra();
                         break;
                     case "4"://Imprimir
                         Impressao();
@@ -117,7 +119,6 @@ namespace Controllers
                     default:
                         break;
                 }
-
             } while (menu != "0");
             Console.ReadKey();
         }
@@ -129,12 +130,17 @@ namespace Controllers
                               "4 - Imprimir Compras Registradas\n" +
                               "0 - Sair");
         }
+        public static int GerarID()
+        {
+            List<Compra> compras = LerCompra();
+            return compras.Count + 1;
+        }
         public static void GravarInfo()
         {
             string cnpj, mprima = "", continuar = "";
             int cont = 0;
             float vtotal = 0;
-            int id = 1; //Precisa ler o arquivo para saber o ID
+            int id = GerarID(); //Precisa ler o arquivo para saber o ID
             do
             {
                 Console.Write("Digite o CNPJ da empresa: ");
@@ -367,16 +373,11 @@ namespace Controllers
             } while (op1 != "5");
 
         }
-        /*private static void RemoverCompra()
+        private static void RemoverCompra()
         {
             int i = 0;
             bool encontrou = false;
             List<Compra> compras = LerCompra();
-
-            foreach (Compra compra in compras)
-            {
-                Console.WriteLine(compra);
-            }
 
             if (!File.Exists(CompraPath))
             {
@@ -385,13 +386,13 @@ namespace Controllers
             }
 
             Console.Write("\nID da compra que deseja remover: ");
-            string id = Console.ReadLine();
+            int id = int.Parse(Console.ReadLine());
 
             Console.Clear();
 
             foreach (Compra compra in compras)
             {
-                if (compra.ToString().Substring(75, 5) == id)
+                if (compra.Id == id)
                 {
                     encontrou = true;
                     break;
@@ -407,15 +408,27 @@ namespace Controllers
 
             compras.RemoveAt(i);
 
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < 3; j++)
+            {
+                sb.Append(compras[i].Mprima[i]);
+                sb.Append($"{compras[i].Qtd[i]:000.00}".Replace(".", ""));
+                sb.Append($"{compras[i].Vunitario[i]:000.00}".Replace(".", ""));
+                sb.Append($"{compras[i].Titem[i]:0000.00}".Replace(".", ""));
+            }
+            sb.Append($"{compras[i].Id:D5}");
+            sb.Append($"{compras[i].Dcompra:ddMMyyyy}");
+            sb.Append(compras[i].CNPJ);
+            sb.Append($"{compras[i].Vtotal:00000.00}".Replace(".", ""));
+
             using (StreamWriter sw = new StreamWriter(CompraPath))
             {
                 foreach (Compra compra in compras)
                 {
-                    sw.WriteLine(compra.ToString().Replace(",", ""));
+                    sw.WriteLine(sb.ToString());
                 }
             }
             Console.WriteLine("\nCompra removida com sucesso!!\n");
-        }*/
+        }
     }
 }
-
