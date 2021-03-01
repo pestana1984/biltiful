@@ -419,10 +419,10 @@ namespace Controllers
             StringBuilder sb = new StringBuilder();
             for (int j = 0; j < 3; j++)
             {
-                sb.Append(compras[j].Mprima[j]);
-                sb.Append($"{compras[j].Qtd[j]:000.00}".Replace(".", ""));
-                sb.Append($"{compras[j].Vunitario[j]:000.00}".Replace(".", ""));
-                sb.Append($"{compras[j].Titem[j]:0000.00}".Replace(".", ""));
+                sb.Append(compras[i].Mprima[j]);
+                sb.Append($"{compras[i].Qtd[j]:000.00}".Replace(".", ""));
+                sb.Append($"{compras[i].Vunitario[j]:000.00}".Replace(".", ""));
+                sb.Append($"{compras[i].Titem[j]:0000.00}".Replace(".", ""));
             }
             sb.Append($"{compras[i].Id:D5}");
             sb.Append($"{compras[i].Dcompra:ddMMyyyy}");
