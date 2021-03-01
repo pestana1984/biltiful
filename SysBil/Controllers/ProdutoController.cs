@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Model;
 using System.Globalization;
 using System.IO;
+using Models;
 
 namespace Controllers
 {
@@ -194,13 +194,31 @@ namespace Controllers
             if (!itemEncontrado)
                 Console.WriteLine("Produto não cadastrado");
         }
+
+        public static bool LocalizarProduto(string buscarId)
+        {
+            bool itemEncontrado = false;
+            List<Produto> Produtos = ConverterParaLista();
+            foreach (var produto in Produtos)
+            {
+                if ((produto.CBarras == buscarId) && (produto.Situacao == 'A')) // existe
+                {
+                    itemEncontrado = true;
+                    break;
+                }
+            }
+            if (!itemEncontrado)
+                Console.WriteLine("Produto não cadastrado ou Inativo");
+            return (itemEncontrado);
+        }
+
         public static List<Produto> ConverterParaLista()//modulo faz a leitura do arquivo e aloca em um objeto produto
         {
             List<Produto> Produtos = new List<Produto>();
             try
             {
-                FileManipulator file = new FileManipulator() { Path = @"C:\Users\ferna\Google Drive\Estagio Five\Repositorio\biltiful\SysBil\files\", Name = "Cosmetico.txt" };
-                string[] produtoArquivadas = FileManupulatorController.LerArquivo(file);
+                FileManipulator file = new FileManipulator() { Path = @"C:\Arquivos\", Name = "Cosmetico.dat" };
+                string[] produtoArquivadas = FileManipulatorController.LerArquivo(file);
 
 
                 foreach (var produto in produtoArquivadas)
@@ -415,7 +433,7 @@ namespace Controllers
                 linha += listP[i].CBarras + nome20pos + value6Pos + uvenda + dcadastro + listP[i].Situacao.ToString() + "\n";
             }
 
-            using (StreamWriter fileWrite = new StreamWriter(@"C:\Users\ferna\Google Drive\Estagio Five\Repositorio\biltiful\SysBil\files\Cosmetico.txt"))
+            using (StreamWriter fileWrite = new StreamWriter(@"C:\Arquivos\Cosmetico.dat"))
             {
                 fileWrite.WriteLine(linha);
                 fileWrite.Close();

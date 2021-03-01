@@ -35,7 +35,7 @@ namespace SysBil {
                 switch (menuPrincipal)
                 {
                     case "1":
-
+                        MenuProducao();
                         break;
                     case "2":
                         MenuVenda(arquivoVenda, arquivoInadimplente, listaCliente);
@@ -289,6 +289,40 @@ namespace SysBil {
                 }
             } while (opc != 0);
 
+        }
+
+        static void MenuProducao() 
+        {
+            string menu = ">>>Menu principal da producao\n\n" +
+                              "1 - Menu de produtos\n" +
+                              "2 - Menu de materia prima\n" +
+                              "3 - Menu de produção\n" +
+                              "4 - Encerrar\n";
+            string op;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine(menu);
+                Console.Write(">>>");
+                op = Console.ReadLine();
+
+                switch (op)
+                {
+                    case "1":
+                        ProdutoController.MenuProduto();
+                        break;
+
+                    case "2":
+                        MPrimaController.MenuMateriaPrima();
+                        break;
+
+                    case "3":
+                        ProducaoController.MenuProducao();
+                        break;
+                    case "4":
+                        break;
+                }
+            } while (op != "4");
         }
     }
     

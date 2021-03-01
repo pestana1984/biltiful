@@ -48,6 +48,8 @@
     <Compile Include="ControllersFornecedor.cs" />
     <Compile Include="FileManipulatorController.cs" />
     <Compile Include="inadimplenteController.cs" />
+    <Compile Include="ProducaoController.cs" />
+    <Compile Include="ProdutoController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VendasController.cs" />
   </ItemGroup>

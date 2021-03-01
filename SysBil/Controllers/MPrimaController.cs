@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Model;
+using Models;
 
 namespace Controllers
 {
@@ -180,8 +181,8 @@ namespace Controllers
 			List<MPrima> MPrimas = new List<MPrima>();
 			try
 			{
-				FileManipulator file = new FileManipulator() { Path = @"C:\Users\Thiago\Desktop\biltiful-grupo1\SysBil\file", Name = "Materia.txt" };
-				string[] mprimaArquivadas = FileManupulatorController.LerArquivo(file);
+				FileManipulator file = new FileManipulator() { Path = @"C:\Arquivos", Name = "Materia.dat" };
+				string[] mprimaArquivadas = FileManipulatorController.LerArquivo(file);
 
 
 				foreach (var mprima in mprimaArquivadas)
@@ -417,7 +418,7 @@ namespace Controllers
 				linha += listMP[i].Id + nome20pos + ucompra + dcadastro + listMP[i].Situacao.ToString() + "\n";
 			}
 
-			using (StreamWriter fileWrite = new StreamWriter(@"C:\Users\Thiago\Desktop\biltiful-grupo1\SysBil\file\Materia.txt"))
+			using (StreamWriter fileWrite = new StreamWriter(@"C:\Arquivos\Materia.dat"))
 			{
 				fileWrite.WriteLine(linha);
 				fileWrite.Close();

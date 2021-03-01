@@ -1,4 +1,5 @@
 using Model;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -177,7 +178,7 @@ namespace Controllers
 				linha += idSeque + dproducao + produto + qtd + mprima + qtdMP + "\n";
 			}
 
-			using (StreamWriter fileWrite = new StreamWriter(@"C:\Users\Thiago\Desktop\biltiful-grupo1\SysBil\file\Producao.txt"))
+			using (StreamWriter fileWrite = new StreamWriter(@"C:\Arquivos\Producao.dat"))
 			{
 				fileWrite.WriteLine(linha);
 				fileWrite.Close();
@@ -233,8 +234,8 @@ namespace Controllers
 			List<Producao> listProducao = new List<Producao>();
 			try
 			{
-				FileManipulator file = new FileManipulator() { Path = @"C:\Users\Thiago\Desktop\biltiful-grupo1\SysBil\file\", Name = "Producao.txt" };
-				string[] producaoArquivos = FileManupulatorController.LerArquivo(file);
+				FileManipulator file = new FileManipulator() { Path = @"C:\Arquivos\", Name = "Producao.dat" };
+				string[] producaoArquivos = FileManipulatorController.LerArquivo(file);
 
 				foreach (var arqProducao in producaoArquivos)
 				{

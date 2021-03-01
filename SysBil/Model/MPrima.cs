@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,10 @@ namespace Model
         public string Nome { get; set; }
         public DateTime Ucompra { get; set; }
         public DateTime Dcadastro { get; set; }
-        public char Situacao { get; set; }
+        public string Situacao { get; set; }
 
         public MPrima() { }
-        public MPrima(string id, string nome, DateTime ucompra, DateTime dcadastro, char situacao)
+        public MPrima(string id, string nome, DateTime ucompra, DateTime dcadastro, string situacao)
         {
             Id = id;
             Nome = nome;

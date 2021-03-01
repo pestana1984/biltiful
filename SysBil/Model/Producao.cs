@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,15 @@ namespace Model
 
         public override string ToString()
         {
-            return $"Id: {Id}\nData produção: {DProducao}\nCódigo de Barras: {CBarras}\nQuantidade: {Qtd}\nID Matéria Prima: {IdMP}\nQuantidade: {QtdMP}";
+            string materiaPrima = "";
+            for (int i = 0; i < QtdMP.Length; i++)
+            {
+                if (QtdMP[i] != null)
+                {
+                    materiaPrima += IdMP[i].ToString() + "  -  " + QtdMP[i].ToString() + "\n";
+                }
+            }
+            return $"Id: {Id}\nData produção: {DProducao.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}\nCódigo de Barras: {CBarras}\nQuantidade: {Qtd}\nMatéria Prima:\n  Id  -  Quantidade\n{materiaPrima}";
         }
     }
 }

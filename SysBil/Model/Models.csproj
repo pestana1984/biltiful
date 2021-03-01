@@ -48,6 +48,7 @@
     <Compile Include="Fornecedor.cs" />
     <Compile Include="Inadimplente.cs" />
     <Compile Include="ItensVenda.cs" />
+    <Compile Include="Producao.cs" />
     <Compile Include="Produto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Venda.cs" />
