@@ -9,8 +9,9 @@ using System.Globalization;
 
 namespace Controllers {
     public class ControllersFornecedor {
-        public static string Path = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers";
+        public static string Path = @"\temp\Biltiful\biltiful\SysBil\Controllers";
         public static string ArquivoPath = $@"{Path}\Fornecedor.dat";
+        public static List<Fornecedor> fornecedores { get; set; }
 
         public static string MenuString = "1 - Cadastrar novo fornecedor\n" +
                                           "2 - Localizar fornecedor\n" +
@@ -101,7 +102,7 @@ namespace Controllers {
             return fornecedor;
         }
         public static void Menu() {
-            List<Fornecedor> fornecedores = new List<Fornecedor>();
+            
             List<Fornecedor> list = new List<Fornecedor>();
             Fornecedor fornecedor = new Fornecedor();
             string cnpj;

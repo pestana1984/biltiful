@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Controllers {
     public class ControllersArquivoBloqueados {
-        private static string DirectoryPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\";
+        private static string DirectoryPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\";
         private static string path = $"{DirectoryPath}Bloqueado.dat";
 
         private static List<string> listaCnpj = new List<string>();
