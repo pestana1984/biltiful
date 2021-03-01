@@ -16,6 +16,7 @@ namespace SysBil
         {
             FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\Isabela Ribeiro\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
             FileManipulatorController.InicializarArquivo(arquivoVenda);
+
             FileManipulator arquivoInadimplente = new FileManipulator { Path = @"C:\Users\Isabela Ribeiro\source\repos\biltiful\SysBil\Arquivos", Name = "Risco.dat" };
             FileManipulatorController.InicializarArquivo(arquivoInadimplente);
             List<Cliente> listaCliente = new List<Cliente>();
@@ -47,6 +48,7 @@ namespace SysBil
             } while (op!=0);
             
                    
+
         }
         static void MenuVendas(FileManipulator arquivoVenda, FileManipulator arquivoInadimplente)
         {
@@ -100,9 +102,11 @@ namespace SysBil
 
         }
 
+
         static void MenuCliente(List<Cliente> lista)
         {
             List<Cliente> listaCliente = new List<Cliente>();
+
             string opcao;
             ClienteController.ReadFile(lista);
             do
@@ -123,7 +127,9 @@ namespace SysBil
                 switch (opcao)
                 {
                     case "1":
-                       //lista.Add(ClienteController.ReadFile(lista)); // CRIA CLIENTE E ADICIONA NA FILA
+
+                        lista.Add(ClienteController.Register(lista)); // CRIA CLIENTE E ADICIONA NA FILA
+
                         lista = lista.OrderBy(x => x.Nome).ToList(); // ORDENA FILA EM ORDEM ALFABETICA
                         ClienteController.WriteFile(lista); // ADICINA LISTA A FILA
                         break;
@@ -193,6 +199,7 @@ namespace SysBil
                         break;
                 }
             } while (opc != 0);
+
         }
     }
  
