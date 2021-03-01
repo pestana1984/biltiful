@@ -141,67 +141,75 @@ namespace Controllers
             int cont = 0;
             float vtotal = 0;
             int id = GerarID(); //Precisa ler o arquivo para saber o ID
-            do
+
+            if (id > 99999)
             {
-                Console.Write("Digite o CNPJ da empresa: ");
-                cnpj = Console.ReadLine();
-                if (!ControllersFornecedor.VerificaCNPJ(cnpj))
-                {
-                    Console.WriteLine("CNPJ inválido. Digite novamente.");
-                }
-            } while (!ControllersFornecedor.VerificaCNPJ(cnpj));
-
-            if (CnpjCadastrados(cnpj))//Verificar status do fornecedor
-            {
-                if (!File.Exists(mPrimaPath))
-                {
-                    Console.WriteLine("\nArquivo de materia prima não encontrado!!\n");
-                    return;
-                }
-                do
-                {
-                    if (procurarMateriaPrima(mPrimaPath, ref mprima) == 1)
-                    {
-                        InserirArquivo(ref vtotal, mprima);
-
-                        cont++;
-
-                        if (cont == 3)
-                        {
-                            Console.WriteLine("\nLimite de 3 produtos atingido\n");
-                        }
-
-                        else
-                        {
-                            Console.WriteLine("\nDeseja inserir outro item? [S/N]: ");
-                            continuar = Console.ReadLine();
-                            Console.WriteLine();
-                        }
-                    }
-
-                } while (continuar.ToUpper() != "N" && cont < 3);
-
-                for (int i = 3; i > cont; i--)
-                {
-                    LinhaVazia();
-                }
-
-                StringBuilder sb = new StringBuilder();
-
-                sb.Append($"{id.ToString("D5")}");
-                sb.Append($"{DateTime.Now:ddMMyyyy}");
-                sb.Append($"{cnpj}");
-                sb.Append($"{vtotal.ToString("00000.00").Replace(".", "")}");
-                using (StreamWriter sw = new StreamWriter(CompraPath, true))
-                {
-                    sw.WriteLine(sb);
-                }
-                id++;
+                Console.WriteLine("Não é possivel cadastrar mais que 99.999 compras");
             }
             else
             {
-                Console.WriteLine("Fornecedor não cadastrado;");
-                return;
+                do
+                {
+                    Console.Write("Digite o CNPJ da empresa: ");
+                    cnpj = Console.ReadLine();
+                    if (!ControllersFornecedor.VerificaCNPJ(cnpj))
+                    {
+                        Console.WriteLine("CNPJ inválido. Digite novamente.");
+                    }
+                } while (!ControllersFornecedor.VerificaCNPJ(cnpj));
+
+                if (CnpjCadastrados(cnpj))//Verificar status do fornecedor
+                {
+                    if (!File.Exists(mPrimaPath))
+                    {
+                        Console.WriteLine("\nArquivo de materia prima não encontrado!!\n");
+                        return;
+                    }
+                    do
+                    {
+                        if (procurarMateriaPrima(mPrimaPath, ref mprima) == 1)
+                        {
+                            InserirArquivo(ref vtotal, mprima);
+
+                            cont++;
+
+                            if (cont == 3)
+                            {
+                                Console.WriteLine("\nLimite de 3 produtos atingido\n");
+                            }
+
+                            else
+                            {
+                                Console.WriteLine("\nDeseja inserir outro item? [S/N]: ");
+                                continuar = Console.ReadLine();
+                                Console.WriteLine();
+                            }
+                        }
+
+                    } while (continuar.ToUpper() != "N" && cont < 3);
+
+                    for (int i = 3; i > cont; i--)
+                    {
+                        LinhaVazia();
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.Append($"{id.ToString("D5")}");
+                    sb.Append($"{DateTime.Now:ddMMyyyy}");
+                    sb.Append($"{cnpj}");
+                    sb.Append($"{vtotal.ToString("00000.00").Replace(".", "")}");
+                    using (StreamWriter sw = new StreamWriter(CompraPath, true))
+                    {
+                        sw.WriteLine(sb);
+                    }
+                    id++;
+                }
+                else
+                {
+                    Console.WriteLine("Fornecedor não cadastrado;");
+                    return;
+                }
             }
             Console.WriteLine();
         }
