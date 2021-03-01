@@ -15,6 +15,8 @@ namespace SysBil
             FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
             FileManipulatorController.InicializarArquivo(arquivoVenda);
             Menu(arquivoVenda);
+            List<Cliente> listaCliente = new List<Cliente>();
+            MenuCliente(listaCliente);
             Console.ReadKey();          
         }
         static void Menu(FileManipulator arquivoVenda)
@@ -62,7 +64,53 @@ namespace SysBil
                 }
             } while (resposta != "0");
 
-        }    
- 
+        }
+        
+        static void MenuCliente(List<Cliente> lista)
+        {
+            string opcao;
+            ClienteController.ReadFile(lista);
+            do
+            { // MENU
+                Console.WriteLine("\n------->>> MENU <<<-------");
+                Console.WriteLine("\n1 - Inserir Cliente" +
+                                    "\n2 - Imprimir Clientes" +
+                                    "\n3 - Imprimir com Controle" +
+                                    "\n4 - Buscar Cliente" +
+                                    "\n5 - Atualizar Cliente" +
+                                    "\n6 - Deletar Cliente" +
+                                    "\n0 - Sair" +
+                                    "\n\n--------------------------");
+                opcao = Console.ReadLine();
+
+                Console.Clear();
+
+                switch (opcao)
+                {
+                    case "1":
+                        lista.Add(ClienteController.Register(lista)); // CRIA CLIENTE E ADICIONA NA FILA
+                        lista = lista.OrderBy(x => x.Nome).ToList(); // ORDENA FILA EM ORDEM ALFABETICA
+                        ClienteController.WriteFile(lista); // ADICINA LISTA A FILA
+                        break;
+                    case "2":
+                        lista.ForEach(x => Console.WriteLine(ClienteController.Get(x))); // IMPRIMI LISTA DE CLIENTES
+                        break;
+                    case "3":
+                        ClienteController.ControlPrint(lista); // IMPRIMI LISTA COM CONTROLE DO CLIENTE
+                        break;
+                    case "4":
+                        Cliente c = ClienteController.Search(lista); // PROCURA CLIENTE PELO NOME
+                        if (c != null) // SE EXISTIR IMPRIME
+                            Console.WriteLine(ClienteController.Get(c));
+                        break;
+                    case "5":
+                        ClienteController.Update(lista); // ATUALIZA CAMPO DE CLIENTE
+                        break;
+                    case "6":
+                        ClienteController.Delete(lista); // DELETA CLIENTE LOGICAMENTE
+                        break;
+                }
+            } while (opcao != "0");
+        }
     }
 }
