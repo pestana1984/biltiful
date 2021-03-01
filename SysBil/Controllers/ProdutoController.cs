@@ -52,7 +52,7 @@ namespace Controllers
                             listaProduto.Add(produto);
                             EscrevendoArquivo(listaProduto);
                             Console.ReadKey();
-                            break;                                                  
+                            break;                                                                                              // os dados nao ficam salvos dentro da classe cliente, será porque preciso criar um vetor? ou tem outro modo de fazer?
                         case 2:
                             LocalizarProduto();
                             Console.ReadKey();
@@ -433,5 +433,23 @@ namespace Controllers
 
             return Stratamento;
         }
+
+        public static bool LocalizarProduto(string buscarId)
+        {
+            bool itemEncontrado = false;
+            List<Produto> Produtos = ConverterParaLista();
+            foreach (var produto in Produtos)
+            {
+                if ((produto.CBarras == buscarId) && (produto.Situacao == 'A')) // existe
+                {
+                    itemEncontrado = true;
+                    break;
+                }
+            }
+            if (!itemEncontrado)
+                Console.WriteLine("Produto não cadastrado ou Inativo");
+            return (itemEncontrado);
+        }
+
     }
 }
