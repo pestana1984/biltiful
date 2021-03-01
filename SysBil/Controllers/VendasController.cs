@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Model;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,20 +11,30 @@ namespace Controllers
 {
     public class VendasController
     {
-        public static Venda CadastrarVenda()
+        public static Venda CadastrarVenda(List<Inadimplente> listaDeInadimplentes)
         {
+            
             Cliente client = new Cliente();
             string buscaCpf;
+            
             List<ItensVenda> listaItemVendas = new List<ItensVenda>();
 
             Console.WriteLine("\nInforme o cpf do cliente: \n");
             buscaCpf = Console.ReadLine();
+            Inadimplente iNada = new Inadimplente()
+            {
+                Cpf = long.Parse(buscaCpf)
+            };
 
             if (client.Cpf == buscaCpf)
             {
-                Console.WriteLine("\nCliente ja esta cadastrado!\n");
-
-                //ISABELA E IRWING VER SE É INADIMPLENTE
+                if (inadimplenteController.VerificarInadimplente(iNada, listaDeInadimplentes))
+                {
+                    Console.WriteLine("Cliente inadimplente!");
+                    Console.ReadKey();
+                    return null;
+                }
+                           
             }
             else
             {
@@ -113,6 +124,7 @@ namespace Controllers
 
         public static void Localizar(List<Venda> acharVenda)
         {
+            
 
             int id;
 
@@ -120,6 +132,8 @@ namespace Controllers
             id = int.Parse(Console.ReadLine());
 
             Venda encontrada = acharVenda.Find(venda => venda.Id.Equals(id));
+           
+            
 
             Console.WriteLine(encontrada);
 

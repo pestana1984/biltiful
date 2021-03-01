@@ -1,4 +1,6 @@
-﻿using Controllers;
+﻿using Controller;
+using Controllers;
+using Model;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -12,25 +14,56 @@ namespace SysBil
     {
         static void Main(string[] args)
         {
-            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
+            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\Isabela Ribeiro\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
             FileManipulatorController.InicializarArquivo(arquivoVenda);
-            Menu(arquivoVenda);
+
+            FileManipulator arquivoInadimplente = new FileManipulator { Path = @"C:\Users\Isabela Ribeiro\source\repos\biltiful\SysBil\Arquivos", Name = "Risco.dat" };
+            FileManipulatorController.InicializarArquivo(arquivoInadimplente);
             List<Cliente> listaCliente = new List<Cliente>();
-            MenuCliente(listaCliente);
-            Console.ReadKey();          
+
+
+            int op;
+            do
+            {
+                Console.WriteLine("Menu Principal\n1-menu cliente\n2-Menu Vendas\n3-Menu inadimplentes\n0-Sair");
+                Console.WriteLine("Digite a opção desejada");
+                op = int.Parse(Console.ReadLine());
+
+                switch (op)
+                {
+                    case 1:
+                        MenuCliente(listaCliente);
+                        break;
+                    case 2:
+                        MenuVendas(arquivoVenda, arquivoInadimplente);
+                        break;
+                    case 3:
+                        MenuInadimplentes(arquivoVenda, arquivoInadimplente);
+                        break;
+                    default:
+                        Console.WriteLine("Opção Invalida!");
+                        break;
+                }
+
+            } while (op!=0);
+            
+                   
+
         }
-        static void Menu(FileManipulator arquivoVenda)
+        static void MenuVendas(FileManipulator arquivoVenda, FileManipulator arquivoInadimplente)
         {
             Venda venda = new Venda();
             List<Produto> produtos = new List<Produto>();
             List<Venda> vendas = new List<Venda>();
+            List<Inadimplente> riscos = new List<Inadimplente>();
+
             string resposta;
 
             do
             {
                 Console.WriteLine(">>> Vendas SysBil <<< ");
                 Console.WriteLine("\n1)Cadastrar Venda.");
-                Console.WriteLine("\n2)Localizar uma venda.");                
+                Console.WriteLine("\n2)Localizar uma venda.");
                 Console.WriteLine("\n3)Excluir uma venda.");
                 Console.WriteLine("\n4)Imprimir uma venda.");
                 Console.WriteLine("\n0)SAIR.");
@@ -40,8 +73,10 @@ namespace SysBil
                 switch (resposta)
                 {
                     case "1":
+
+                        riscos = inadimplenteController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoInadimplente));
                         vendas = VendasController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoVenda));
-                        vendas.Add(VendasController.CadastrarVenda());
+                        vendas.Add(VendasController.CadastrarVenda(riscos));
                         FileManipulatorController.EscreverNoArquivo(arquivoVenda, VendasController.ConverterParaSalvar(vendas));
                         break;
 
@@ -54,20 +89,24 @@ namespace SysBil
 
                     case "4":
                         vendas = VendasController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoVenda));
-                        vendas.ForEach(amostra=> Console.WriteLine(amostra));
+                        vendas.ForEach(amostra => Console.WriteLine(amostra));
                         Console.ReadKey();
                         break;
 
-                   
-                    default: Console.WriteLine("\nOpção inválida\n"); 
+
+                    default:
+                        Console.WriteLine("\nOpção inválida\n");
                         break;
                 }
             } while (resposta != "0");
 
         }
-        
+
+
         static void MenuCliente(List<Cliente> lista)
         {
+            List<Cliente> listaCliente = new List<Cliente>();
+
             string opcao;
             ClienteController.ReadFile(lista);
             do
@@ -88,7 +127,9 @@ namespace SysBil
                 switch (opcao)
                 {
                     case "1":
+
                         lista.Add(ClienteController.Register(lista)); // CRIA CLIENTE E ADICIONA NA FILA
+
                         lista = lista.OrderBy(x => x.Nome).ToList(); // ORDENA FILA EM ORDEM ALFABETICA
                         ClienteController.WriteFile(lista); // ADICINA LISTA A FILA
                         break;
@@ -96,21 +137,71 @@ namespace SysBil
                         lista.ForEach(x => Console.WriteLine(ClienteController.Get(x))); // IMPRIMI LISTA DE CLIENTES
                         break;
                     case "3":
-                        ClienteController.ControlPrint(lista); // IMPRIMI LISTA COM CONTROLE DO CLIENTE
+                      //ClienteController.ControlPrint(lista); // IMPRIMI LISTA COM CONTROLE DO CLIENTE
                         break;
                     case "4":
-                        Cliente c = ClienteController.Search(lista); // PROCURA CLIENTE PELO NOME
+                      /* Cliente c = ClienteController.Search(lista); // PROCURA CLIENTE PELO NOME
                         if (c != null) // SE EXISTIR IMPRIME
-                            Console.WriteLine(ClienteController.Get(c));
+                            Console.WriteLine(ClienteController.Get(c));*/
                         break;
                     case "5":
-                        ClienteController.Update(lista); // ATUALIZA CAMPO DE CLIENTE
+                      // ClienteController.Update(lista); // ATUALIZA CAMPO DE CLIENTE
                         break;
                     case "6":
-                        ClienteController.Delete(lista); // DELETA CLIENTE LOGICAMENTE
+                       //ClienteController.Delete(lista); // DELETA CLIENTE LOGICAMENTE
                         break;
                 }
             } while (opcao != "0");
+
+        }    
+        static void MenuInadimplentes(FileManipulator arquivoVenda, FileManipulator arquivoInadimplente)
+        {
+            List<Inadimplente> riscos = new List<Inadimplente>();
+            int opc;
+            do
+            {
+                Console.WriteLine(">>>Inadimplentes SysBil <<< ");
+                Console.WriteLine("\n1)Cadastrar Inadimplente.");
+                Console.WriteLine("\n2)Localizar");
+                Console.WriteLine("\n3)Excluir.");
+                Console.WriteLine("\n0)SAIR.");
+                Console.WriteLine("Digite uma opção valida");
+                opc = int.Parse(Console.ReadLine());
+                switch (opc)
+                {
+                    case 1:
+                        Inadimplente novoInadimplente = inadimplenteController.CadastrarInadimplentes();
+                        riscos = inadimplenteController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoInadimplente));
+                        if (!inadimplenteController.VerificarInadimplente(novoInadimplente, riscos))
+                        {
+                            riscos.Add(novoInadimplente);
+                            FileManipulatorController.EscreverNoArquivo(arquivoInadimplente, inadimplenteController.ConverterParaSalvar(riscos));
+
+                        }
+
+                        break;
+
+                    case 2:
+                        riscos = inadimplenteController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoInadimplente));
+                        riscos = inadimplenteController.LocalizarInadimplentes(riscos);
+                       
+
+                        break;
+
+                    case 3:
+                        riscos = inadimplenteController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoInadimplente));
+                        riscos = inadimplenteController.DeletarInadimplente(riscos);
+                        FileManipulatorController.EscreverNoArquivo(arquivoInadimplente, inadimplenteController.ConverterParaSalvar(riscos));
+                        break;
+
+                    default:
+                        Console.WriteLine("\nOpção inválida\n");
+                        break;
+                }
+            } while (opc != 0);
+
         }
     }
+ 
+    
 }
