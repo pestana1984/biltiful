@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models
+namespace Model
 {
-    public class FileManipulator
+    public class Inadimplente
     {
-        public string Path { get; set; }
-        public string Name { get; set; }
+        public long Cpf { get; set; }
+
     }
 }

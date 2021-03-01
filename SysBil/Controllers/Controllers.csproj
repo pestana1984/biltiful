@@ -43,7 +43,20 @@
   <ItemGroup>
     <Compile Include="Arquivo.cs" />
     <Compile Include="MPrimaController.cs" />
+    <Compile Include="ClienteController.cs" />
+    <Compile Include="ControllersArquivoBloqueados.cs" />
+    <Compile Include="ControllersCompra.cs" />
+    <Compile Include="ControllersFornecedor.cs" />
+    <Compile Include="FileManipulatorController.cs" />
+    <Compile Include="inadimplenteController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VendasController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Models.csproj">
+      <Project>{9f1ccc80-d50a-49fa-9755-436a26c53f9c}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Model\Models.csproj">
