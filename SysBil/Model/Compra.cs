@@ -16,7 +16,8 @@ namespace Models
         public float Qtd { get; set; }
         public float Vunitario { get; set; }
         public float Titem { get; set; }
-        
+        public string CNPJ { get; set; }
+
 
     }
 }

@@ -1,26 +1,21 @@
 using System;
 using Controllers;
 
-namespace SysBil
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
+namespace SysBil {
+    class Program {
+        static void Main(string[] args) {
             string menu = "1 - Menu fornecedor\n" +
                           "2 - Menu fornecedor bloqueado\n" +
                           "3 - Menu compra\n" +
                           "4 - Encerrar\n";
             string op;
-            do
-            {
+            do {
                 Console.WriteLine(menu);
                 Console.Write(">>>");
                 op = Console.ReadLine();
 
 
-                switch (op)
-                {
+                switch (op) {
                     case "1":
                         ControllersFornecedor.Menu();
                         break;
