@@ -227,7 +227,7 @@ namespace Controllers
         // ESCRITA DE ARQUIVO
         public static void WriteFile(List<Cliente> listaCliente)
         {
-            using (StreamWriter file = new StreamWriter(@"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos\Clientes.dat"))
+            using (StreamWriter file = new StreamWriter(@"C:\Arquivos\Clientes.dat"))
             {
                 foreach (Cliente c in listaCliente)
                     file.WriteLine(GetFile(c)); // ESCREVE A LISTA NO ARQUIVO SEPARADOS POR QUEBRA LINHA
@@ -238,9 +238,9 @@ namespace Controllers
         public static void ReadFile(List<Cliente> listaCliente)
         {
             // SE O ARQUIVO EXISTIR
-            if (File.Exists(@"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos\Clientes.dat"))
+            if (File.Exists(@"C:\Arquivos\Clientes.dat"))
             {
-                using (StreamReader file = new StreamReader(@"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos\Clientes.dat"))
+                using (StreamReader file = new StreamReader(@"C:\Arquivos\Clientes.dat"))
                 {
                     // VARIAVEIS
                     string nome, cpf, nasc, uCom, dCad;
