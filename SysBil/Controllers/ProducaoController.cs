@@ -193,7 +193,64 @@ namespace Controllers
             return listProducao;
         }
 	    
-	    
+	    public static void ImpressaoPorRegistro()
+		{
+
+			List<Producao> Produtos = ConverterParaLista();
+
+			Console.WriteLine("Faça a escolha do item que deseja imprimir");
+			int cont = 0;
+			string escolha;
+			do
+			{
+				Console.Clear();
+
+				if ((cont > 0) && (cont < Produtos.Count() - 1))
+					Console.WriteLine("A <- | -> P   I <-- | --> U :");
+				if (cont == 0) Console.WriteLine("-> P  --> U :");
+				if (cont == Produtos.Count() - 1) Console.WriteLine("<- A  <-- I :");
+				Console.WriteLine("S para sair");
+
+				if (cont <= Produtos.Count() - 1)
+				{
+					Console.WriteLine(Produtos[cont].ToString());
+				}
+
+				do
+				{
+					escolha = TratamentoString().ToUpper();
+					if ((escolha != "A") && (escolha != "P") && (escolha != "I") && (escolha != "U") && (escolha != "S"))
+					{
+						Console.WriteLine("Digite apenas as opçoes que o menu dispoe no momento!!!");
+					}
+
+				}
+				while ((escolha != "A") && (escolha != "P") && (escolha != "I") && (escolha != "U") && (escolha != "S"));
+
+				if (escolha == "I")
+				{
+					cont = 0;
+				}
+
+				if ((escolha == "P") && (cont < Produtos.Count() - 1))
+				{
+					cont++;
+				}
+				else if ((escolha == "U") && (cont < Produtos.Count() - 1))
+				{
+					cont = Produtos.Count() - 1;
+				}
+
+				if ((escolha == "A") && (cont <= Produtos.Count() - 1) && (cont > 0))
+				{
+					cont--;
+				}
+
+				Console.ReadKey();
+			}
+			while (escolha != "S");
+
+		}
 	    
 	    
 	    
