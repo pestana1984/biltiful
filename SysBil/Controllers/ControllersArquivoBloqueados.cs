@@ -7,19 +7,18 @@ using System.Threading.Tasks;
 
 namespace Controllers {
     public class ControllersArquivoBloqueados {
-        private static string path = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\Bloqueado.dat";
-        public static string DirectoryPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\";
+        private static string DirectoryPath = @"C:\temp\ws-c#\5by5-ativ03\biltiful\SysBil\Controllers\";
+        private static string path = $"{DirectoryPath}Bloqueado.dat";
 
         private static List<string> listaCnpj = new List<string>();
+
         private static string MenuString = "\n>>> Menu - Fornecedor Bloqueado <<<\n" + "1- Inserir CNPJ\n" +
                                            "2- Localizar Fornecedor Bloqueado\n" + "3- Liberar CNPJ\n" +
                                            "4- Voltar ao Menu Principal\n\n" + "Digite sua escolha: ";
-        public static bool CriarArquivo()
-        {
+        public static bool CriarArquivo() {
             bool criou = false;
 
-            if (!Directory.Exists(DirectoryPath))
-            {
+            if (!Directory.Exists(DirectoryPath)) {
                 Directory.CreateDirectory(DirectoryPath);
                 criou = true;
             }
@@ -57,20 +56,16 @@ namespace Controllers {
             }
         }
 
-        public static List<string> LerBloqueados()
-        {
+        public static List<string> LerBloqueados() {
             List<string> bloqueados = new List<string>();
 
-            using (StreamReader streamReader = new StreamReader(path))
-            {
-                while (!streamReader.EndOfStream)
-                {
+            using (StreamReader streamReader = new StreamReader(path)) {
+                while (!streamReader.EndOfStream) {
                     bloqueados.Add(streamReader.ReadLine());
                 }
             }
             return bloqueados;
         }
-
         private static void Liberar() {
             string cnpj;
             int i = 0;
@@ -142,12 +137,13 @@ namespace Controllers {
         }
         private static void InserirNoArquivo() {
             string cnpj;
-            while (true) {
-                Console.Write("CNPJ que deseja bloquear: ");
-                cnpj = Console.ReadLine();
 
-                if (ValidacaoCNPJ(cnpj)) break;
-                Console.WriteLine("\nDigite um CNPJ válido!!\n");
+            Console.Write("CNPJ que deseja bloquear: ");
+            cnpj = Console.ReadLine();
+
+            if (!CnpjCadastrados(cnpj)) {
+                Console.WriteLine("\nCNPJ não encontrado nos cadastros!\n");
+                return;
             }
 
             if (LocalizarNoArquivo(cnpj)) {
@@ -161,45 +157,8 @@ namespace Controllers {
             Console.WriteLine("\nCNPJ bloqueado com sucesso!!\n");
 
         }
-        private static bool ValidacaoCNPJ(string cnpj) {
-            int[] m1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-            int[] m2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-            int soma = 0, resto;
-            string digito, cnpj2;
-
-            if (cnpj.Length != 14)
-                return false;
-
-            cnpj2 = cnpj.Substring(0, 12);
-
-            for (int i = 0; i < 12; i++) soma += int.Parse(cnpj2[i].ToString()) * m1[i];
-            resto = (soma % 11);
-
-            if (resto < 2)
-                resto = 0;
-
-            else
-                resto = 11 - resto;
-
-            digito = resto.ToString();
-            cnpj2 += digito;
-
-            soma = 0;
-
-            for (int i = 0; i < 13; i++) soma += int.Parse(cnpj2[i].ToString()) * m2[i];
-            resto = (soma % 11);
-
-            if (resto < 2)
-                resto = 0;
-
-            else
-                resto = 11 - resto;
-
-            digito += resto.ToString();
-
-            if (cnpj.EndsWith(digito)) return true;
-
-            return false;
+        private static bool CnpjCadastrados(string cnpj) {
+            return ControllersFornecedor.ProcuraCNPJ(cnpj);
         }
     }
 }
