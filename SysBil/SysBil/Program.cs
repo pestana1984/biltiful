@@ -1,5 +1,4 @@
-﻿using Controller;
-using Controllers;
+﻿using Controllers;
 using Model;
 using Models;
 using System;
@@ -9,33 +8,41 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SysBil
+
 {
     class Program
     {
         static void Main(string[] args)
         {
-            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\Isabela Ribeiro\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
+            FileManipulator arquivoVenda = new FileManipulator {Path = @"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos", Name = "Venda.dat"};
             FileManipulatorController.InicializarArquivo(arquivoVenda);
 
-            FileManipulator arquivoInadimplente = new FileManipulator { Path = @"C:\Users\Isabela Ribeiro\source\repos\biltiful\SysBil\Arquivos", Name = "Risco.dat" };
+            FileManipulator arquivoInadimplente = new FileManipulator { Path = @"C:\Users\talit\source\repos\biltiful\SysBil\Arquivos", Name = "Risco.dat" };
             FileManipulatorController.InicializarArquivo(arquivoInadimplente);
             List<Cliente> listaCliente = new List<Cliente>();
-
+            ClienteController.ReadFile(listaCliente);
 
             int op;
             do
             {
-                Console.WriteLine("Menu Principal\n1-menu cliente\n2-Menu Vendas\n3-Menu inadimplentes\n0-Sair");
-                Console.WriteLine("Digite a opção desejada");
-                op = int.Parse(Console.ReadLine());
+                Console.Clear();
 
+                Console.WriteLine("\n------->>> MENU PRINCIPAL <<<-------");
+                Console.WriteLine("\n1 - Menu cliente." +
+                                    "\n2 - Menu Vendas." +
+                                    "\n3 - Menu inadimplentes." +                                    
+                                    "\n0 - Sair" +
+                                    "\n\n-----------------------------------");                              
+                Console.WriteLine("\nDigite a opção desejada");
+                op = int.Parse(Console.ReadLine());
+                Console.Clear();
                 switch (op)
                 {
                     case 1:
                         MenuCliente(listaCliente);
                         break;
                     case 2:
-                        MenuVendas(arquivoVenda, arquivoInadimplente);
+                        MenuVendas(arquivoVenda, arquivoInadimplente, listaCliente);
                         break;
                     case 3:
                         MenuInadimplentes(arquivoVenda, arquivoInadimplente);
@@ -45,12 +52,9 @@ namespace SysBil
                         break;
                 }
 
-            } while (op!=0);
-            
-                   
-
+            } while (op!=0);          
         }
-        static void MenuVendas(FileManipulator arquivoVenda, FileManipulator arquivoInadimplente)
+        static void MenuVendas(FileManipulator arquivoVenda, FileManipulator arquivoInadimplente, List<Cliente>listaCliente)
         {
             Venda venda = new Venda();
             List<Produto> produtos = new List<Produto>();
@@ -61,13 +65,13 @@ namespace SysBil
 
             do
             {
-                Console.WriteLine(">>> Vendas SysBil <<< ");
-                Console.WriteLine("\n1)Cadastrar Venda.");
-                Console.WriteLine("\n2)Localizar uma venda.");
-                Console.WriteLine("\n3)Excluir uma venda.");
-                Console.WriteLine("\n4)Imprimir uma venda.");
-                Console.WriteLine("\n0)SAIR.");
-
+                Console.WriteLine("\n------->>> Vendas SysBil <<<-------");
+                Console.WriteLine("\n1 - Cadastrar Vendas." +
+                                    "\n2 - Localizar uma venda." +
+                                    "\n3 - Excluir uma venda." +
+                                    "\n4 - Imprimir uma venda." +                                    
+                                    "\n0 - Sair" +
+                                    "\n\n--------------------------");                
                 resposta = Console.ReadLine();
 
                 switch (resposta)
@@ -76,8 +80,22 @@ namespace SysBil
 
                         riscos = inadimplenteController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoInadimplente));
                         vendas = VendasController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoVenda));
-                        vendas.Add(VendasController.CadastrarVenda(riscos));
-                        FileManipulatorController.EscreverNoArquivo(arquivoVenda, VendasController.ConverterParaSalvar(vendas));
+                        int id;
+                        if (vendas.Count == 0)
+                        {
+                            id = 0;
+                        }
+                        else
+                        {
+                            id = vendas.Last().Id;
+                        }                       
+                        Venda novaVenda = VendasController.CadastrarVenda(riscos, listaCliente,id);
+                        if (novaVenda != null)
+                        {
+                            vendas.Add(novaVenda);
+                            FileManipulatorController.EscreverNoArquivo(arquivoVenda, VendasController.ConverterParaSalvar(vendas));
+                        }
+                        
                         break;
 
                     case "2":
@@ -85,11 +103,13 @@ namespace SysBil
                         break;
 
                     case "3":
+                        VendasController.ExcluirVenda(vendas, arquivoVenda);
                         break;
 
                     case "4":
                         vendas = VendasController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoVenda));
-                        vendas.ForEach(amostra => Console.WriteLine(amostra));
+                        VendasController.PrintVenda(vendas);
+
                         Console.ReadKey();
                         break;
 
@@ -108,7 +128,7 @@ namespace SysBil
             List<Cliente> listaCliente = new List<Cliente>();
 
             string opcao;
-            ClienteController.ReadFile(lista);
+            
             do
             { // MENU
                 Console.WriteLine("\n------->>> MENU <<<-------");
@@ -128,27 +148,31 @@ namespace SysBil
                 {
                     case "1":
 
-                        lista.Add(ClienteController.Register(lista)); // CRIA CLIENTE E ADICIONA NA FILA
-
-                        lista = lista.OrderBy(x => x.Nome).ToList(); // ORDENA FILA EM ORDEM ALFABETICA
-                        ClienteController.WriteFile(lista); // ADICINA LISTA A FILA
+                        ClienteController.Register(lista); // CRIA CLIENTE E ADICIONA NA FILA                        
                         break;
                     case "2":
-                        lista.ForEach(x => Console.WriteLine(ClienteController.Get(x))); // IMPRIMI LISTA DE CLIENTES
+                        if (lista.Count > 0)
+                        {
+                            lista.ForEach(x => Console.WriteLine(ClienteController.Get(x))); // IMPRIMI LISTA DE CLIENTES
+                        }
+                        else
+                        {
+                            Console.WriteLine("Lista Vazia!!!");
+                        }
                         break;
                     case "3":
-                      //ClienteController.ControlPrint(lista); // IMPRIMI LISTA COM CONTROLE DO CLIENTE
+                      ClienteController.ControlPrint(lista); // IMPRIMI LISTA COM CONTROLE DO CLIENTE
                         break;
                     case "4":
-                      /* Cliente c = ClienteController.Search(lista); // PROCURA CLIENTE PELO NOME
+                     Cliente c = ClienteController.Search(lista); // PROCURA CLIENTE PELO NOME
                         if (c != null) // SE EXISTIR IMPRIME
-                            Console.WriteLine(ClienteController.Get(c));*/
+                            Console.WriteLine(ClienteController.Get(c));
                         break;
                     case "5":
-                      // ClienteController.Update(lista); // ATUALIZA CAMPO DE CLIENTE
+                       ClienteController.Update(lista); // ATUALIZA CAMPO DE CLIENTE
                         break;
                     case "6":
-                       //ClienteController.Delete(lista); // DELETA CLIENTE LOGICAMENTE
+                       ClienteController.Delete(lista); // DELETA CLIENTE LOGICAMENTE
                         break;
                 }
             } while (opcao != "0");
@@ -176,16 +200,18 @@ namespace SysBil
                         {
                             riscos.Add(novoInadimplente);
                             FileManipulatorController.EscreverNoArquivo(arquivoInadimplente, inadimplenteController.ConverterParaSalvar(riscos));
-
                         }
-
                         break;
 
                     case 2:
                         riscos = inadimplenteController.ConverterParaList(FileManipulatorController.LerArquivo(arquivoInadimplente));
-                        riscos = inadimplenteController.LocalizarInadimplentes(riscos);
-                       
-
+                        Console.WriteLine("Informe o CPF para localizar: ");
+                        string cpf = Console.ReadLine();
+                        Inadimplente devedor = new Inadimplente() { Cpf = long.Parse(cpf) };
+                        if (inadimplenteController.VerificarInadimplente(devedor, riscos))
+                        {
+                            Console.WriteLine("Este CPF está inadimplente!!!!");
+                        }                  
                         break;
 
                     case 3:
@@ -201,7 +227,5 @@ namespace SysBil
             } while (opc != 0);
 
         }
-    }
- 
-    
+    }   
 }

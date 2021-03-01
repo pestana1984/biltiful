@@ -16,7 +16,7 @@ namespace Models
 
         public double ValorTotal { get; set; }
 
-        public string ClienteCpf{ get; set; }
+        public string ClienteCpf{ get; set; }        
 
         public override string ToString()
         {
