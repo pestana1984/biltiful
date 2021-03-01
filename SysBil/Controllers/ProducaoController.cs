@@ -29,36 +29,42 @@ namespace Controllers
                 }
             } while (!deuCerto);
 
-            Console.WriteLine("Informe o Código de Barras: ");
-            string cbarra = Console.ReadLine();
-            //Localizar produto para validação
-
-            Console.WriteLine("Informe a quantidade a ser produzida: ");
-            int qtd = int.Parse(Console.ReadLine());
-            //ERRO----------------ERRO
-            double[] qtdMP = new double[3];
-            string decisao;
-            int cont = 1;
+            string cbarra;
             do
             {
-                Console.WriteLine("Informe a quantidade de matéira prima: ");
-                qtdMP[cont-1] = double.Parse(Console.ReadLine());
-                if(cont < 3)Console.WriteLine("Deseja inserir mais matéria prima (s/n):");
-                decisao = Console.ReadLine();
-                cont++;                
-            } while (decisao != "n" || cont == 3);
+                Console.WriteLine("Informe o Código de Barras: ");
+                cbarra = Console.ReadLine();
+            } while (!ProdutoController.LocalizarProduto(cbarra));
+            
+            //Localizar produto para validação
 
+            Console.Write("Informe a quantidade a ser produzida: ");
+            int qtd = int.Parse(Console.ReadLine());
 
-            string[] idMp = new string[3];
-            for (int i = 0; i < cont; i++)
+            int quantidadeMP = 3;
+            string[] idMp = new string[3] {" ", " ", " "};
+            double[] qtdMP = new double[3] {0, 0, 0};
+            string decisao = "s";
+            
+
+            for(int i = 0; i < quantidadeMP; i++)
             {
                 do
                 {
-                    Console.WriteLine("Informe o Código da Matéria Prima: ");
+                    Console.Write("Informe o Id da matéria prima que deseja utilizar: ");
                     idMp[i] = Console.ReadLine();
                 } while (!MPrimaController.LocalizarMPrima(idMp[i]));
-            }
+                
+                Console.Write("Informe a quantidade de matéria prima: ");
+                qtdMP[i] = double.Parse(Console.ReadLine());
 
+                if(i < 2)
+                {
+                    Console.Write("Deseja inserir mais matéria prima (s/n): ");
+                    decisao = Console.ReadLine().ToLower();
+                }
+                if (decisao.Equals("n"))break;
+            }
 
             //guardando data local
             DateTime dabertura = DateTime.Now;
@@ -76,7 +82,7 @@ namespace Controllers
             string idSeque, dproducao, produto, qtd, mprima, qtdMP;
             for (int i = 0; i < listProdtion.Count; i++)
             {
-                idSeque = listProdtion[i].Id.ToString().PadRight(5, ' ');
+                idSeque = listProdtion[i].Id.ToString().PadLeft(5, '0');
                 dproducao = listProdtion[i].DProducao.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                 produto = listProdtion[i].CBarras;
                 qtd = listProdtion[i].Qtd.ToString().PadRight(3, ' ');
