@@ -99,6 +99,104 @@ namespace Controllers
             }
         }
         
+	    public static void LocalizarProducao()
+        {
+            bool itemEncontrado = false;
+            
+            int buscarId = 0;
+            do
+            {
+                Console.Write("Informe o ID da produção prima para localizar: ");
+            }
+            while (!int.TryParse(Console.ReadLine(), out buscarId));
+
+                List<Producao> listProducao = ConverterParaLista();
+
+            foreach (var producao in listProducao)
+            {
+                if (producao.Id == buscarId)
+                {
+                    itemEncontrado = true;
+                    Console.WriteLine(producao.ToString());
+                    
+                }
+            }
+
+            if (!itemEncontrado) Console.WriteLine("Produção não cadastrada");
+            
+        }
+
+        public static bool LocalizarProducao(int buscarId)
+        {
+            bool itemEncontrado = false;
+            List<Producao> listProducao = ConverterParaLista();
+
+            foreach (var producao in listProducao)
+            {
+                if (producao.Id == buscarId)
+                {
+                    itemEncontrado = true;
+                    Console.WriteLine(producao.ToString());
+                    return itemEncontrado;
+
+                }
+            }
+
+            if (!itemEncontrado) Console.WriteLine("Produção não cadastrada");
+            return itemEncontrado;
+        }
+	    
+	    public static List<Producao> ConverterParaLista()
+        {
+            List<Producao> listProducao = new List<Producao>();
+            try
+            {
+                FileManipulator file = new FileManipulator() { Path = @"C:\Users\ferna\Google Drive\Estagio Five\Repositorio\biltiful\SysBil\files", Name = "Producao.txt" };
+                string[] producaoArquivos = FileManupulatorController.LerArquivo(file);
+
+                foreach (var arqProducao in producaoArquivos)
+                {
+                    if (arqProducao.Length == 67)
+                    {
+                        string id = arqProducao.Substring(0, 5);
+                        string dProducao = arqProducao.Substring(5, 10);
+                        string cBarrasProduto = arqProducao.Substring(15, 13);
+                        string qtdProducao = arqProducao.Substring(28, 3);
+                        string MPrima0 = arqProducao.Substring(31, 6);
+                        string MPrima1 = arqProducao.Substring(37, 6);
+                        string MPrima2 = arqProducao.Substring(43, 6);
+                        string qtdMPrima0 = arqProducao.Substring(49, 6);
+                        string qtdMPrima1 = arqProducao.Substring(55, 6);
+                        string qtdMPrima2 = arqProducao.Substring(61, 6);
+
+                        Producao producao = new Producao
+                        {
+                            Id = int.Parse(id),
+                            DProducao = Convert.ToDateTime(dProducao),
+                            CBarras = cBarrasProduto,
+                            Qtd = int.Parse(qtdProducao),
+                            IdMP = new string[] { MPrima0, MPrima1, MPrima2 },
+                            QtdMP = new Double[] { double.Parse(qtdMPrima0), double.Parse(qtdMPrima1), double.Parse(qtdMPrima2) }
+
+                        };
+
+                        listProducao.Add(producao);
+                    }
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine("ERRO!!!!: " + ex.Message);
+                Console.ReadKey();
+            }
+
+            return listProducao;
+        }
+	    
+	    
+	    
+	    
+	    
         public static void ExcluirProducao() 
         {
             List<Producao> listaProducao;
