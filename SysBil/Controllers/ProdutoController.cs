@@ -121,6 +121,23 @@ namespace Controllers
 
             return produto;
         }
+        public static bool LocalizarProduto(string buscarId)
+        {
+            bool itemEncontrado = false;
+            
+            List<Produto> Produtos = ConverterParaLista();
+            foreach (var produto in Produtos)
+            {
+                if (produto.CBarras == buscarId)
+                {
+                    itemEncontrado = true;
+                    break;
+                }
+            }
+            if (!itemEncontrado)
+                Console.WriteLine("Produto não cadastrado");
+            return (itemEncontrado);
+        }
 
     }
 }
