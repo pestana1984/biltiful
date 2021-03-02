@@ -452,22 +452,6 @@ namespace Controllers
             return Stratamento;
         }
 
-        public static bool LocalizarProduto(string buscarId)
-        {
-            bool itemEncontrado = false;
-            List<Produto> Produtos = ConverterParaLista();
-            foreach (var produto in Produtos)
-            {
-                if ((produto.CBarras == buscarId) && (produto.Situacao == 'A')) // existe
-                {
-                    itemEncontrado = true;
-                    break;
-                }
-            }
-            if (!itemEncontrado)
-                Console.WriteLine("Produto não cadastrado ou Inativo");
-            return (itemEncontrado);
-        }
 
     }
 }
