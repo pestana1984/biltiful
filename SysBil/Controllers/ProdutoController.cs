@@ -211,6 +211,22 @@ namespace Controllers
                 Console.WriteLine("Produto não cadastrado ou Inativo");
             return (itemEncontrado);
         }
+        public static Produto RetornarProduto(string buscarId)
+        {
+            bool itemEncontrado = false;
+            List<Produto> Produtos = ConverterParaLista();
+            foreach (var produto in Produtos)
+            {
+                if ((produto.CBarras == buscarId) && (produto.Situacao == 'A')) // existe
+                {
+                    return produto;
+                    
+                }
+            }
+            if (!itemEncontrado)
+                Console.WriteLine("Produto não cadastrado ou Inativo");
+            return null;
+        }
 
         public static List<Produto> ConverterParaLista()//modulo faz a leitura do arquivo e aloca em um objeto produto
         {
