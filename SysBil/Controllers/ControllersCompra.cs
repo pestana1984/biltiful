@@ -328,7 +328,6 @@ namespace Controllers
                     string linha = streamReader.ReadLine();
                     if (linha.Substring(0, 6) == id && linha.Substring(46, 1) == "A")
                     {
-                        Console.WriteLine("\nSucesso\n");
                         mprima = id;
                         disponivel = 1;
                     }
