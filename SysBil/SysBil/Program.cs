@@ -7,6 +7,7 @@ using Models;
 
 namespace SysBil {
     class Program {
+        
         static void Main(string[] args)
         {
             FileManipulator arquivoVenda = new FileManipulator { Path = @"C:\Arquivos", Name = "Venda.dat" };

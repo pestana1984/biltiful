@@ -72,7 +72,7 @@ namespace Controllers
                     }
                 
             } while (escolha != 0);
-            Console.WriteLine("Precione Qualquer Tecla para Finalizar");
+            Console.WriteLine("Pressione Qualquer Tecla para Retornar ao Menu");
             Console.ReadKey();
         }
 
