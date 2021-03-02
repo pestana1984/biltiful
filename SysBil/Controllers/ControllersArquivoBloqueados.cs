@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Controllers {
     public class ControllersArquivoBloqueados {
-        private static string DirectoryPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\";
+        private static string DirectoryPath = @"C:\Arquivos\";
         private static string path = $"{DirectoryPath}Bloqueado.dat";
 
         private static List<string> listaCnpj = new List<string>();
@@ -15,12 +15,19 @@ namespace Controllers {
         private static string MenuString = "\n>>> Menu - Fornecedor Bloqueado <<<\n" + "1- Inserir CNPJ\n" +
                                            "2- Localizar Fornecedor Bloqueado\n" + "3- Liberar CNPJ\n" +
                                            "4- Voltar ao Menu Principal\n\n" + "Digite sua escolha: ";
-        public static bool CriarArquivo() {
+        public static bool CriarArquivo()
+        {
             bool criou = false;
 
-            if (!Directory.Exists(DirectoryPath)) {
+            if (!Directory.Exists(DirectoryPath))//CRIA PASTA
+            {
                 Directory.CreateDirectory(DirectoryPath);
                 criou = true;
+            }
+            if (!File.Exists(path))//CRIA ARQUIVO
+            {
+                FileStream sw = File.Create(path);
+                sw.Close();
             }
             return criou;
         }
@@ -57,6 +64,7 @@ namespace Controllers {
         }
 
         public static List<string> LerBloqueados() {
+            CriarArquivo();
             List<string> bloqueados = new List<string>();
 
             using (StreamReader streamReader = new StreamReader(path)) {

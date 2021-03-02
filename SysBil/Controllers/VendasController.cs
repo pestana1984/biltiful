@@ -244,10 +244,12 @@ namespace Controllers
                   
                 foreach (var objeto in itemProdutos)
                 {
+
                     string produto = objeto.Substring(0, 13).Trim();
                     string qtd = objeto.Substring(13, 3).Trim();
                     string vunitario = objeto.Substring(16, 6).Trim();
                     string titem = objeto.Substring(22, 8).Trim();
+
                 
                    ListItensVendas.Add(new ItensVenda {Produto = produto, Qtd =int.Parse(qtd), Vunitario = double.Parse(vunitario), Titem = double.Parse(titem)});
                    
