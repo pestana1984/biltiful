@@ -138,7 +138,8 @@ namespace Controllers {
                             fornecedores.Add(fornecedor);
                             SalvarArquivo(fornecedor);
                         }
-
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
 
                     case "2": //Localizar fornecedor
@@ -152,6 +153,8 @@ namespace Controllers {
                         else {
                             Console.WriteLine("CNPJ nao encontrado!");
                         }
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
 
                     case "3"://Editar
@@ -171,6 +174,8 @@ namespace Controllers {
                                     else {
                                         Console.WriteLine("CNPJ nao encontrado");
                                     }
+                                    Console.ReadKey();
+                                    Console.Clear();
                                     break;
 
                                 case "2"://Editar situacao
@@ -182,7 +187,8 @@ namespace Controllers {
                                     else {
                                         Console.WriteLine("CNPJ nao encontrado");
                                     }
-
+                                    Console.ReadKey();
+                                    Console.Clear();
                                     break;
 
                                 case "3"://Excluir
@@ -212,10 +218,13 @@ namespace Controllers {
                                         }
                                     }
                                     Console.WriteLine("\nCNPJ Liberado com sucesso!");
-
+                                    Console.ReadKey();
+                                    Console.Clear();
                                     break;
 
                                 case "4"://Voltar ao menu anterior
+                                    Console.ReadKey();
+                                    Console.Clear();
                                     break;
 
                                 default:
@@ -266,6 +275,8 @@ namespace Controllers {
                                         else {
                                             j++;
                                         }
+                                        Console.ReadKey();
+                                        Console.Clear();
                                         break;
 
                                     case "2":
@@ -275,17 +286,25 @@ namespace Controllers {
                                         else {
                                             j--;
                                         }
+                                        Console.ReadKey();
+                                        Console.Clear();
                                         break;
 
                                     case "3":
                                         j = 0;
+                                        Console.ReadKey();
+                                        Console.Clear();
                                         break;
 
                                     case "4":
                                         j = list.Count - 1;
+                                        Console.ReadKey();
+                                        Console.Clear();
                                         break;
 
                                     case "5":
+                                        Console.ReadKey();
+                                        Console.Clear();
                                         break;
 
                                     default:
@@ -298,6 +317,8 @@ namespace Controllers {
 
                     case "5":
                         Console.WriteLine("Voltando menu anterior !");
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
 
                     default:

@@ -148,6 +148,7 @@ namespace Controllers
         }
         public static void MenuGrafico()
         {
+            Console.Clear();
             Console.WriteLine("1 - Cadastrar Compra\n" +
                               "2 - Localizar Compra\n" +
                               "3 - Excluir Compra\n" +
@@ -367,8 +368,8 @@ namespace Controllers
                 Console.WriteLine($"\n{list.ElementAt(i)}");
                 ControllersFornecedor.fornecedores = ControllersFornecedor.LerArquivo();
                 Console.WriteLine(ControllersFornecedor.fornecedores.Find(l => l.Cnpj == list.ElementAt(i).CNPJ));
-
-
+                Console.ReadKey();
+                Console.Clear();
                 Console.WriteLine("\nO que deseja fazer a seguir?\n" +
                                   "1 - Proximo\n" +
                                   "2 - Anterior\n" +
@@ -383,6 +384,7 @@ namespace Controllers
                         {
                             Console.Clear();
                             Console.WriteLine("Você esta no fim da lista");
+
                         }
                         else
                         {
