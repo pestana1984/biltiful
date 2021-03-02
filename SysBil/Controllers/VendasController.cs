@@ -240,10 +240,10 @@ namespace Controllers
                   
                 foreach (var objeto in itemProdutos)
                 {
-                    string produto = objeto.Substring(0, 5).Trim();
-                    string qtd = objeto.Substring(5, 3).Trim();
-                    string vunitario = objeto.Substring(8, 6).Trim();
-                    string titem = objeto.Substring(14, 8).Trim();
+                    string produto = objeto.Substring(0, 5);
+                    string qtd = objeto.Substring(5, 3);
+                    string vunitario = objeto.Substring(8, 6);
+                    string titem = objeto.Substring(14, 8);
                 
                    ListItensVendas.Add(new ItensVenda {Produto = produto, Qtd =int.Parse(qtd), Vunitario = double.Parse(vunitario), Titem = double.Parse(titem)});
                    

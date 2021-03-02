@@ -15,10 +15,11 @@ namespace Controllers
         private static string mPrimaPath = @"C:\Arquivos\Materia.dat";
         private static string DirectoryCompraPath = @"C:\Arquivos";
         private static string CompraPath = $@"{DirectoryCompraPath}\Compra.dat";
+        private static string IdPath = $@"{DirectoryCompraPath}\IdCompra.dat";
         public static bool CriarArquivo()
         {
             bool criou = false;
-            bool criou2 = false;
+
 
             if (!Directory.Exists(DirectoryCompraPath))//CRIA PASTA
             {
@@ -29,7 +30,11 @@ namespace Controllers
             {
                 FileStream sw = File.Create(CompraPath);
                 sw.Close();
-                criou2 = true;
+            }
+            if (!File.Exists(IdPath))//CRIA ARQUIVO
+            {
+                FileStream sw = File.Create(IdPath);
+                sw.Close();
             }
             return criou;
         }
@@ -149,18 +154,33 @@ namespace Controllers
                               "4 - Imprimir Compras Registradas\n" +
                               "0 - Sair");
         }
-        public static int GerarID()
+        public static void SalvarID(int id)
         {
-            List<Compra> compras = LerCompra();
-            return compras.Count + 1;
+            FileStream fl = File.Create(IdPath);
+            fl.Close();
+            using (StreamWriter sw = new StreamWriter(IdPath, true))
+            {
+                sw.Write(id);
+            }
+        }
+        public static int LerID()
+        {
+            CriarArquivo();
+            string[] lines = File.ReadAllLines(IdPath);
+            if (lines.Length != 1)
+            {
+                return 0;
+            }
+            
+            return int.Parse(lines[0]);
         }
         public static void GravarInfo()
         {
             string cnpj, mprima = "", continuar = "";
             int cont = 0;
             float vtotal = 0;
-            int id = GerarID(); //Precisa ler o arquivo para saber o ID
-
+            int id = LerID(); //Precisa ler o arquivo para saber o ID
+            id++;
             if (id > 99999)
             {
                 Console.WriteLine("Não é possivel cadastrar mais que 99.999 compras");
@@ -188,7 +208,7 @@ namespace Controllers
                     {
                         if (procurarMateriaPrima(mPrimaPath, ref mprima) == 1)
                         {
-                            InserirArquivo(ref vtotal, mprima);
+                            InserirArquivo(ref vtotal, mprima, id);
 
                             cont++;
 
@@ -222,7 +242,7 @@ namespace Controllers
                     {
                         sw.WriteLine(sb);
                     }
-                    id++;
+                    
                 }
                 else
                 {
@@ -232,7 +252,7 @@ namespace Controllers
             }
             Console.WriteLine();
         }
-        private static void InserirArquivo(ref float vtotal, string mprima)
+        private static void InserirArquivo(ref float vtotal, string mprima, int id)
         {
             float qtd, vunitario, titem;
             do
@@ -260,6 +280,7 @@ namespace Controllers
                             vtotal += titem;
                             if (vtotal < 99999.99)
                             {
+                                SalvarID(id);
                                 break;
                             }
                             else
