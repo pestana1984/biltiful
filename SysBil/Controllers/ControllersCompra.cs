@@ -35,6 +35,7 @@ namespace Controllers
         }
         public static List<Compra> LerCompra()
         {
+            CriarArquivo();
             List<Compra> list = new List<Compra>();
             string[] lines = File.ReadAllLines(CompraPath);
             for (int i = 0; i < lines.Length; i++)
@@ -297,7 +298,7 @@ namespace Controllers
             int disponivel = 0;
 
             Console.Write("ID da matéria prima que deseja comprar: ");
-            id = Console.ReadLine();
+            id = Console.ReadLine().ToUpper();
 
             using (StreamReader streamReader = new StreamReader(path))
             {
