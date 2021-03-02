@@ -12,12 +12,18 @@ namespace Controllers
     {
         public static void InicializarArquivo(FileManipulator arquivo)
         {
-            if (!File.Exists($@"{arquivo.Path}\{arquivo.Name}"))
+            if (!Directory.Exists(arquivo.Path))//CRIA PASTA
             {
-                using (File.Create($@"{arquivo.Path}\{arquivo.Name}"))
+                Directory.CreateDirectory(arquivo.Path);
+
+                if (!File.Exists($@"{arquivo.Path}\{arquivo.Name}"))
                 {
-                    Console.WriteLine($"Arquivo {arquivo.Name} Criado com sucesso!");
+                    using (File.Create($@"{arquivo.Path}\{arquivo.Name}"))
+                    {
+                        Console.WriteLine($"Arquivo {arquivo.Name} Criado com sucesso!");
+                    }
                 }
+
             }
         }
         public static void EscreverNoArquivo(FileManipulator arquivo, string[] conteudo)
