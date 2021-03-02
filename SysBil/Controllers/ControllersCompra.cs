@@ -12,9 +12,27 @@ namespace Controllers
     public class ControllersCompra
     {
 
-        private static string mPrimaPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\mprima.dat";
-        private static string CompraPath = @"C:\temp\Biltiful\biltiful\SysBil\Controllers\Compra.dat";
+        private static string mPrimaPath = @"C:\Arquivos\Materia.dat";
+        private static string DirectoryCompraPath = @"C:\Arquivos";
+        private static string CompraPath = $@"{DirectoryCompraPath}\Compra.dat";
+        public static bool CriarArquivo()
+        {
+            bool criou = false;
+            bool criou2 = false;
 
+            if (!Directory.Exists(DirectoryCompraPath))//CRIA PASTA
+            {
+                Directory.CreateDirectory(DirectoryCompraPath);
+                criou = true;
+            }
+            if (!File.Exists(CompraPath))//CRIA ARQUIVO
+            {
+                FileStream sw = File.Create(CompraPath);
+                sw.Close();
+                criou2 = true;
+            }
+            return criou;
+        }
         public static List<Compra> LerCompra()
         {
             List<Compra> list = new List<Compra>();
@@ -274,6 +292,7 @@ namespace Controllers
         }
         private static int procurarMateriaPrima(string path, ref string mprima)
         {
+            path = mPrimaPath;
             string id;
             int disponivel = 0;
 
