@@ -15,16 +15,16 @@ namespace Controllers
             if (!Directory.Exists(arquivo.Path))//CRIA PASTA
             {
                 Directory.CreateDirectory(arquivo.Path);
-
-                if (!File.Exists($@"{arquivo.Path}\{arquivo.Name}"))
-                {
-                    using (File.Create($@"{arquivo.Path}\{arquivo.Name}"))
-                    {
-                        Console.WriteLine($"Arquivo {arquivo.Name} Criado com sucesso!");
-                    }
-                }
-
             }
+
+            if (!File.Exists($@"{arquivo.Path}\{arquivo.Name}"))
+            {
+                using (File.Create($@"{arquivo.Path}\{arquivo.Name}"))
+                {
+                    Console.WriteLine($"Arquivo {arquivo.Name} Criado com sucesso!");
+                }
+            }
+
         }
         public static void EscreverNoArquivo(FileManipulator arquivo, string[] conteudo)
         {
