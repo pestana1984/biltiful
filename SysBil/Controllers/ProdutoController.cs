@@ -451,7 +451,5 @@ namespace Controllers
 
             return Stratamento;
         }
-
-
     }
 }
